@@ -1,0 +1,19 @@
+spring:
+  application:
+   name: ngo
+
+  datasource:
+    url:
+    username:
+    password:
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    clean-disabled: false
+
