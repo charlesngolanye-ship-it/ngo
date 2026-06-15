@@ -15,6 +15,4 @@ public class ExpenseDto {
     private String description;
     private BigDecimal amount;
     private LocalDate expenseDate;
-
-
 }

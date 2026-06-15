@@ -19,6 +19,10 @@ public class GrantService{
         if (grant.getEndDate().isBefore(grant.getStartDate())) {
             throw new IllegalArgumentException("End date cannot be before start date");
         }
+
+        if(grant.getGrantNumber() == null) {
+            throw new IllegalArgumentException("Grant Number is required");
+        }
         return grantRepository.save(grant);
     }
 
