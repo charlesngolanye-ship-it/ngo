@@ -1,10 +1,12 @@
 package org.charlesngolanye.ngo.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.BudgetCategoryDto;
+import org.charlesngolanye.ngo.dtos.BudgetCategoryRequestDto;
+import org.charlesngolanye.ngo.dtos.BudgetCategoryResponseDto;
 import org.charlesngolanye.ngo.entities.BudgetCategory;
 import org.charlesngolanye.ngo.mappers.BudgetCategoryMapper;
 import org.charlesngolanye.ngo.services.BudgetCategoryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +20,16 @@ public class BudgetCategoryController {
     private final BudgetCategoryMapper budgetCategoryMapper;
 
     @PostMapping
-    public BudgetCategory addBudgetCategory(@RequestBody BudgetCategory budgetCategory) {
-        return budgetCategoryService.addBudgetCategory(budgetCategory);
+    public ResponseEntity <BudgetCategoryResponseDto> addBudgetCategory(@RequestBody BudgetCategoryRequestDto requestDto) {
+        BudgetCategory budgetCategory = budgetCategoryMapper.toEntity(requestDto);
+        BudgetCategory savedBudgetCategory = budgetCategoryService.addBudgetCategory(budgetCategory);
+        BudgetCategoryResponseDto responseDto = budgetCategoryMapper.toDto(savedBudgetCategory);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping
-    public List<BudgetCategoryDto> getBudgetCategories() {
+    public List<BudgetCategoryResponseDto> getBudgetCategories() {
         return budgetCategoryService.getBudgetCategories()
                 .stream()
                 .map(budgetCategoryMapper::toDto)
@@ -31,9 +37,9 @@ public class BudgetCategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BudgetCategoryDto> getBudgetCategoryById(@PathVariable Long id) {
+    public ResponseEntity<BudgetCategoryResponseDto> getBudgetCategoryById(@PathVariable Long id) {
         BudgetCategory budgetCategory = budgetCategoryService.getBudgetCategoryById(id);
-        BudgetCategoryDto budgetCategoryDto = budgetCategoryMapper.toDto(budgetCategory);
-        return ResponseEntity.ok(budgetCategoryDto);
+        BudgetCategoryResponseDto budgetCategoryResponseDto = budgetCategoryMapper.toDto(budgetCategory);
+        return ResponseEntity.ok(budgetCategoryResponseDto);
     }
 }

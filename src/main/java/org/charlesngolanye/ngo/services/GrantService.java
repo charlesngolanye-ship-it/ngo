@@ -36,3 +36,7 @@ public class GrantService{
     }
 
 }
+/*
+ *  The Service layer only accepts and returns Entities. It focuses 100% on business domain rules and DB transactions
+ *  Stays completely decoupled from HTTP representations
+ */

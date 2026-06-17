@@ -1,10 +1,12 @@
 package org.charlesngolanye.ngo.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.ExpenseDto;
+import org.charlesngolanye.ngo.dtos.ExpenseRequestDto;
+import org.charlesngolanye.ngo.dtos.ExpenseResponseDto;
 import org.charlesngolanye.ngo.entities.Expense;
 import org.charlesngolanye.ngo.mappers.ExpenseMapper;
 import org.charlesngolanye.ngo.services.ExpenseService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +20,16 @@ public class ExpenseController {
     private final ExpenseMapper expenseMapper;
 
     @PostMapping
-    public Expense addExpense(@RequestBody Expense expense) {
-        return expenseService.addExpense(expense);
+    public ResponseEntity<ExpenseResponseDto> addExpense(@RequestBody ExpenseRequestDto requestDto) {
+        Expense expense = expenseMapper.toEntity(requestDto);
+        Expense savedExpense =  expenseService.addExpense(expense);
+        ExpenseResponseDto responseDto = expenseMapper.toDto(savedExpense);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping
-    public List<ExpenseDto> getAllExpenses() {
+    public List<ExpenseResponseDto> getAllExpenses() {
         return expenseService.getAllExpenses()
                 .stream()
                 .map(expenseMapper::toDto)
@@ -31,9 +37,9 @@ public class ExpenseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExpenseDto> getExpenseById(@PathVariable Long id) {
+    public ResponseEntity<ExpenseResponseDto> getExpenseById(@PathVariable Long id) {
         Expense expense = expenseService.getExpenseById(id);
-        ExpenseDto expenseDto = expenseMapper.toDto(expense);
-        return ResponseEntity.ok(expenseDto);
+        ExpenseResponseDto expenseResponseDto = expenseMapper.toDto(expense);
+        return ResponseEntity.ok(expenseResponseDto);
     }
 }

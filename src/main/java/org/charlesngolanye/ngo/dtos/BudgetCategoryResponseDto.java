@@ -3,16 +3,15 @@ package org.charlesngolanye.ngo.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class GrantDto {
+@Setter
+public class BudgetCategoryResponseDto {
     private Long id;
-    private String grantNumber;
-    private String grantName;
-    private String donorName;
-    private BigDecimal totalApprovedBudget;
+    private String name;
+    private String description;
+
 }
