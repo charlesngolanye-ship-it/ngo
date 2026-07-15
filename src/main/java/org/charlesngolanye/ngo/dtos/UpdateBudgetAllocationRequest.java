@@ -1,20 +1,18 @@
 package org.charlesngolanye.ngo.dtos;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import org.charlesngolanye.ngo.entities.BudgetCategory;
 import org.charlesngolanye.ngo.entities.Grant;
 
 import java.math.BigDecimal;
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-public class BudgetAllocationRequestDto {
+
+@Data
+public class UpdateBudgetAllocationRequest {
     @NotNull(message = "Grant ID is required")
     private Long grantId;
 

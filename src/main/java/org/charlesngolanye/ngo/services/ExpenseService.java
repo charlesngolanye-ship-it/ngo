@@ -1,12 +1,16 @@
 package org.charlesngolanye.ngo.services;
 
 import lombok.RequiredArgsConstructor;
+import org.charlesngolanye.ngo.dtos.ExpenseRequestDto;
+import org.charlesngolanye.ngo.dtos.ExpenseResponseDto;
+import org.charlesngolanye.ngo.dtos.UpdateExpenseRequest;
 import org.charlesngolanye.ngo.entities.BudgetCategory;
 import org.charlesngolanye.ngo.entities.Expense;
 import org.charlesngolanye.ngo.entities.Grant;
 import org.charlesngolanye.ngo.exceptions.BudgetCategoryNotFoundException;
 import org.charlesngolanye.ngo.exceptions.ExpenseNotFoundException;
 import org.charlesngolanye.ngo.exceptions.GrantNotFoundException;
+import org.charlesngolanye.ngo.mappers.ExpenseMapper;
 import org.charlesngolanye.ngo.repositories.BudgetCategoryRepository;
 import org.charlesngolanye.ngo.repositories.ExpenseRepository;
 import org.charlesngolanye.ngo.repositories.GrantRepository;
@@ -24,43 +28,61 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final GrantRepository grantRepository;
     private final BudgetCategoryRepository budgetCategoryRepository;
+    private final ExpenseMapper expenseMapper;
 
-    public Expense addExpense(Expense expense){
+    public ExpenseResponseDto addExpense(ExpenseRequestDto requestDto){
+        Expense expense = expenseMapper.toEntity(requestDto);
 
-        validateExpense(expense);
-
-        Grant verifiedGrant = grantRepository.findById(expense.getGrant().getId())
+        Grant verifiedGrant = grantRepository.findById(requestDto.getGrantId())
                 .orElseThrow(() -> new GrantNotFoundException("Grant not found")
                 );
 
-        if (expense.getExpenseDate().isBefore(verifiedGrant.getStartDate()) || expense.getExpenseDate().isAfter(
-                verifiedGrant.getEndDate()
-        )) {
-            throw new IllegalArgumentException("Expense date must be within the grant period ("
-            + verifiedGrant.getStartDate() + " to " + verifiedGrant.getEndDate() + ")");
-        }
-
-        BudgetCategory verifiedBudgetCategory = budgetCategoryRepository.findById(expense.getBudgetCategory().getId())
+        BudgetCategory verifiedBudgetCategory = budgetCategoryRepository.findById(requestDto.getBudgetCategoryId())
                 .orElseThrow(() -> new BudgetCategoryNotFoundException("Budget category not found"));
 
         expense.setGrant(verifiedGrant);
         expense.setBudgetCategory(verifiedBudgetCategory);
+        validateExpenseDomainRules(expense);
 
-        return expenseRepository.save(expense);
+        Expense savedExpense = expenseRepository.save(expense);
+        return expenseMapper.toDto(savedExpense);
+    }
+
+    @Transactional(readOnly = true)// use readOnly when retrieving data
+    public List<ExpenseResponseDto> getAllExpenses() {
+        return expenseRepository.findAll().stream()
+                .map(expenseMapper::toDto)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<Expense> getAllExpenses() {
-        return expenseRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public Expense getExpenseById(Long id){
-        return expenseRepository.findById(id)
+    public ExpenseResponseDto getExpenseById(Long id){
+        Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
+        return expenseMapper.toDto(expense);
     }
 
-    private void validateExpense(Expense expense) {
+    public ExpenseResponseDto updateExpense(Long id, UpdateExpenseRequest request) {
+        Expense existingExpense = expenseRepository.findById(id)
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
+
+        // Update the values on the managed entity cleanly
+        expenseMapper.update(request, existingExpense);
+
+        // Re-run rules to ensure modifications didn't break business invariants
+        validateExpenseDomainRules(existingExpense);
+
+        return expenseMapper.toDto(expenseRepository.save(existingExpense));
+    }
+
+
+    public void deleteExpense(Long id) {
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
+        expenseRepository.delete(expense);
+    }
+
+    private void validateExpenseDomainRules(Expense expense) {
         if (expense.getAmount() == null || expense.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Expense amount must be a positive value greater than zero.");
         }
@@ -70,12 +92,11 @@ public class ExpenseService {
         }
 
 
-        if (expense.getGrant() == null || expense.getGrant().getId() == null) {
-            throw new IllegalArgumentException("Grant is required");
-        }
-
-        if (expense.getBudgetCategory() == null || expense.getBudgetCategory().getId() == null) {
-            throw new IllegalArgumentException("Budget category is required");
+        Grant grant = expense.getGrant();
+        if (expense.getExpenseDate().isBefore(grant.getStartDate()) ||
+                expense.getExpenseDate().isAfter(grant.getEndDate())) {
+            throw new IllegalArgumentException("Expense date must be within the grant period ("
+            + grant.getStartDate() + " to " + grant.getEndDate() + ")");
         }
 
     }

@@ -5,3 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GrantRepository  extends JpaRepository<Grant, Long> {
 }
+/*
+boolean existsByGrantNumber(String grantNumber);
+ */

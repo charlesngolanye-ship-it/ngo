@@ -15,8 +15,9 @@ import java.math.BigDecimal;
 @Setter
 public class BudgetAllocationResponseDto {
     private Long id;
-    private Grant grant;
-    private BudgetCategory budgetCategory;
+    private Long grantId;
+    private String grantName;
+    private Long budgetCategoryId;
+    private String budgetCategoryName;
     private BigDecimal approvedAmount;
-
 }
