@@ -1,9 +1,9 @@
 package org.charlesngolanye.ngo.services;
 
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.BudgetCategoryRequestDto;
-import org.charlesngolanye.ngo.dtos.BudgetCategoryResponseDto;
-import org.charlesngolanye.ngo.dtos.UpdateBudgetCategoryRequest;
+import org.charlesngolanye.ngo.dtos.requestDtos.BudgetCategoryRequestDto;
+import org.charlesngolanye.ngo.dtos.responseDtos.BudgetCategoryResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateBudgetCategoryRequest;
 import org.charlesngolanye.ngo.entities.BudgetCategory;
 import org.charlesngolanye.ngo.exceptions.BudgetCategoryNotFoundException;
 import org.charlesngolanye.ngo.mappers.BudgetCategoryMapper;

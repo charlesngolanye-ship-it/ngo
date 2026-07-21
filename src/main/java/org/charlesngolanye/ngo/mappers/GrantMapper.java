@@ -1,8 +1,8 @@
 package org.charlesngolanye.ngo.mappers;
 
-import org.charlesngolanye.ngo.dtos.GrantRequestDto;
-import org.charlesngolanye.ngo.dtos.GrantResponseDto;
-import org.charlesngolanye.ngo.dtos.UpdateGrantRequest;
+import org.charlesngolanye.ngo.dtos.requestDtos.GrantRequestDto;
+import org.charlesngolanye.ngo.dtos.responseDtos.GrantResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateGrantRequest;
 import org.charlesngolanye.ngo.entities.Grant;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

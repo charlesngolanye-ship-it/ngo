@@ -1,13 +1,12 @@
 package org.charlesngolanye.ngo.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.*;
-import org.charlesngolanye.ngo.entities.BudgetAllocation;
-import org.charlesngolanye.ngo.entities.Grant;
-import org.charlesngolanye.ngo.mappers.BudgetAllocationMapper;
+import org.charlesngolanye.ngo.dtos.requestDtos.BudgetAllocationRequestDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateBudgetAllocationRequest;
+import org.charlesngolanye.ngo.dtos.responseDtos.BudgetAllocationResponseDto;
 import org.charlesngolanye.ngo.services.BudgetAllocationService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/budgetAllocations")
+@Tag(name = "Budget Allocations")
 public class BudgetAllocationController {
     private final BudgetAllocationService budgetAllocationService;
 

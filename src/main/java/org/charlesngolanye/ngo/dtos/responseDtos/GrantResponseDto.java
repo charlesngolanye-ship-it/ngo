@@ -1,4 +1,4 @@
-package org.charlesngolanye.ngo.dtos;
+package org.charlesngolanye.ngo.dtos.responseDtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

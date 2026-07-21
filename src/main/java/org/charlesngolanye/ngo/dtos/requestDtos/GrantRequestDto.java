@@ -1,11 +1,13 @@
-package org.charlesngolanye.ngo.dtos;
+package org.charlesngolanye.ngo.dtos.requestDtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.charlesngolanye.ngo.entities.GrantStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,4 +34,8 @@ public class GrantRequestDto { //Inbound Payload - POST/ PUT/ PATCH - when a cli
 
     @NotNull
     private BigDecimal totalApprovedBudget;
+
+    @NotNull
+    @Schema(example = "ACTIVE", description = "Current status of the grant (e.g. ACTIVE, DRAFT, CLOSED)")
+    private GrantStatus status;
 }

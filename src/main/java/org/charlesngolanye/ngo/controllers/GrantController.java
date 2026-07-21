@@ -1,10 +1,13 @@
 package org.charlesngolanye.ngo.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.GrantRequestDto;
-import org.charlesngolanye.ngo.dtos.GrantResponseDto;
-import org.charlesngolanye.ngo.dtos.UpdateGrantRequest;
+import org.charlesngolanye.ngo.dtos.requestDtos.GrantRequestDto;
+import org.charlesngolanye.ngo.dtos.responseDtos.GrantResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateGrantRequest;
 import org.charlesngolanye.ngo.services.GrantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +18,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/grants")
+@Tag(name = "Grants")
 public class GrantController {
     private final GrantService grantService;
 
     @PostMapping
+    @Operation(summary = "Creates a new Grant.")
     public ResponseEntity<GrantResponseDto> createGrant
             (@Valid @RequestBody GrantRequestDto requestDto,
              UriComponentsBuilder uriBuilder) {
@@ -34,7 +39,10 @@ public class GrantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GrantResponseDto> getGrantById(@PathVariable Long id) {
+    @Operation(summary = "Gets a Grant by ID.")
+    public ResponseEntity<GrantResponseDto> getGrantById(
+            @Parameter(description = "The ID of the Grant.")
+            @PathVariable Long id) {
         GrantResponseDto responseDto = grantService.getGrantById(id);
         return ResponseEntity.ok(responseDto);
     }

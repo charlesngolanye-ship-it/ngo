@@ -1,4 +1,4 @@
-package org.charlesngolanye.ngo.dtos;
+package org.charlesngolanye.ngo.dtos.requestDtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

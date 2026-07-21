@@ -1,11 +1,9 @@
-package org.charlesngolanye.ngo.dtos;
+package org.charlesngolanye.ngo.dtos.responseDtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.charlesngolanye.ngo.entities.BudgetCategory;
-import org.charlesngolanye.ngo.entities.Grant;
 
 import java.math.BigDecimal;
 

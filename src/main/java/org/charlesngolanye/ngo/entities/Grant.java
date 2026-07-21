@@ -43,7 +43,7 @@ public class Grant {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private GrantStatus status;
 
     @OneToMany(mappedBy = "grant", cascade = CascadeType.ALL)

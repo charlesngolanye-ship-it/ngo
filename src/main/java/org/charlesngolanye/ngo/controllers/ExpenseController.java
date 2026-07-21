@@ -1,8 +1,11 @@
 package org.charlesngolanye.ngo.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.*;
+import org.charlesngolanye.ngo.dtos.requestDtos.ExpenseRequestDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateExpenseRequest;
+import org.charlesngolanye.ngo.dtos.responseDtos.ExpenseResponseDto;
 import org.charlesngolanye.ngo.services.ExpenseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/expenses")
+@Tag(name = "Expenses")
 public class ExpenseController {
     private final ExpenseService expenseService;
 

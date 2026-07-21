@@ -1,9 +1,9 @@
 package org.charlesngolanye.ngo.services;
 
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.ExpenseRequestDto;
-import org.charlesngolanye.ngo.dtos.ExpenseResponseDto;
-import org.charlesngolanye.ngo.dtos.UpdateExpenseRequest;
+import org.charlesngolanye.ngo.dtos.requestDtos.ExpenseRequestDto;
+import org.charlesngolanye.ngo.dtos.responseDtos.ExpenseResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateExpenseRequest;
 import org.charlesngolanye.ngo.entities.BudgetCategory;
 import org.charlesngolanye.ngo.entities.Expense;
 import org.charlesngolanye.ngo.entities.Grant;

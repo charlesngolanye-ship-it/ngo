@@ -1,9 +1,10 @@
-package org.charlesngolanye.ngo.controllers;
+package org.charlesngolanye.ngo.exceptions.handler;
 
 import org.charlesngolanye.ngo.exceptions.BudgetAllocationNotFoundException;
 import org.charlesngolanye.ngo.exceptions.BudgetCategoryNotFoundException;
 import org.charlesngolanye.ngo.exceptions.ExpenseNotFoundException;
 import org.charlesngolanye.ngo.exceptions.GrantNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,6 +27,14 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         });
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Conflict");
+        response.put("message", "A grant with this grant number already exists.");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(GrantNotFoundException.class)

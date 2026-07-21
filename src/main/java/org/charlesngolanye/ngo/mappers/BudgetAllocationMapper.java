@@ -1,8 +1,8 @@
 package org.charlesngolanye.ngo.mappers;
 
-import org.charlesngolanye.ngo.dtos.BudgetAllocationRequestDto;
-import org.charlesngolanye.ngo.dtos.BudgetAllocationResponseDto;
-import org.charlesngolanye.ngo.dtos.UpdateBudgetAllocationRequest;
+import org.charlesngolanye.ngo.dtos.requestDtos.BudgetAllocationRequestDto;
+import org.charlesngolanye.ngo.dtos.responseDtos.BudgetAllocationResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateBudgetAllocationRequest;
 import org.charlesngolanye.ngo.entities.BudgetAllocation;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

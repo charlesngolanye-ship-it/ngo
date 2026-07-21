@@ -1,9 +1,9 @@
 package org.charlesngolanye.ngo.services;
 
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.GrantRequestDto;
-import org.charlesngolanye.ngo.dtos.GrantResponseDto;
-import org.charlesngolanye.ngo.dtos.UpdateGrantRequest;
+import org.charlesngolanye.ngo.dtos.requestDtos.GrantRequestDto;
+import org.charlesngolanye.ngo.dtos.responseDtos.GrantResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateGrantRequest;
 import org.charlesngolanye.ngo.entities.Grant;
 import org.charlesngolanye.ngo.exceptions.GrantNotFoundException;
 import org.charlesngolanye.ngo.mappers.GrantMapper;

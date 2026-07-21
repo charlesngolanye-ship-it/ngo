@@ -1,12 +1,12 @@
 package org.charlesngolanye.ngo.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.*;
-import org.charlesngolanye.ngo.entities.BudgetCategory;
-import org.charlesngolanye.ngo.mappers.BudgetCategoryMapper;
+import org.charlesngolanye.ngo.dtos.requestDtos.BudgetCategoryRequestDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateBudgetCategoryRequest;
+import org.charlesngolanye.ngo.dtos.responseDtos.BudgetCategoryResponseDto;
 import org.charlesngolanye.ngo.services.BudgetCategoryService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/budgetCategories")
+@Tag(name = "Budget Categories")
 public class BudgetCategoryController {
     private final BudgetCategoryService budgetCategoryService;
 
