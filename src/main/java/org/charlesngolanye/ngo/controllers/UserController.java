@@ -2,14 +2,12 @@ package org.charlesngolanye.ngo.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.charlesngolanye.ngo.dtos.requestDtos.ChangeUserPasswordRequest;
 import org.charlesngolanye.ngo.dtos.requestDtos.RegisterUserRequestDto;
 import org.charlesngolanye.ngo.dtos.requestDtos.UpdateUserRequest;
 import org.charlesngolanye.ngo.dtos.responseDtos.UserResponseDto;
 import org.charlesngolanye.ngo.services.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,11 +22,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(
+    public ResponseEntity<UserResponseDto> registerUser(
             @Valid @RequestBody RegisterUserRequestDto requestDto,
             UriComponentsBuilder uriBuilder) {
 
-        UserResponseDto responseDto = userService.createUser(requestDto);
+        UserResponseDto responseDto = userService.registerUser(requestDto);
 
         var uri = uriBuilder.path("/users/{id}").buildAndExpand(responseDto.getId()).toUri();
 

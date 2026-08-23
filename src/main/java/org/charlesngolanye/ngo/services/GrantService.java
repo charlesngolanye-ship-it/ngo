@@ -15,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor// only entities with all args + no args
+@Transactional
 public class GrantService{
     private final GrantRepository grantRepository;
     private final GrantMapper grantMapper;
@@ -28,6 +29,7 @@ public class GrantService{
         return grantMapper.toDto(savedGrant);
     }
 
+    @Transactional(readOnly = true)
     public List<GrantResponseDto> getAllGrants() {
         return grantRepository.findAll()
                 .stream()
@@ -35,6 +37,7 @@ public class GrantService{
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public GrantResponseDto getGrantById(Long id) {
         Grant grant = grantRepository.findById(id)
                 .orElseThrow(() -> new GrantNotFoundException("Grant not found"));
@@ -66,37 +69,3 @@ public class GrantService{
         }
     }
 }
-/*
- *  The Service layer only accepts and returns Entities. It focuses 100% on business domain rules and DB transactions
- *  Stays completely decoupled from HTTP representations
- */
-
-/*
-public GrantResponseDto addGrant(GrantRequestDto grantRequestDto) {
-
-    Map the request to an entity
-        Grant grant = new Grant();
-        grant.setGrantNumber(grantRequestDto.getGrantNumber());
-        grant.setGrantName(grantRequestDto.getGrantName());
-        grant.setStartDate(grantRequestDto.getStartDate());
-        grant.setEndDate(grantRequestDto.getEndDate());
-        grant.setDonorName(grantRequestDto.getDonorName());
-
-
-
-
-
-     map the grant/ entity to a responseDto
-
-        GrantResponseDto response = new GrantResponseDto();
-        response.setGrantName(grant.getGrantName());
-        response.setGrantNumber(grant.getGrantNumber());
-        response.setStartDate(grant.getStartDate());
-        response.setEndDate(grant.getEndDate());
-        response.setDonorName(grant.getDonorName());
-
-
-     return the responseDto
-}
-
- */

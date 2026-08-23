@@ -3,7 +3,10 @@ package org.charlesngolanye.ngo.services;
 import lombok.RequiredArgsConstructor;
 import org.charlesngolanye.ngo.dtos.responseDtos.CategorySummaryDto;
 import org.charlesngolanye.ngo.dtos.responseDtos.FinancialSummaryResponseDto;
+import org.charlesngolanye.ngo.entities.Grant;
+import org.charlesngolanye.ngo.exceptions.GrantNotFoundException;
 import org.charlesngolanye.ngo.repositories.BudgetCategoryRepository;
+import org.charlesngolanye.ngo.repositories.GrantRepository;
 import org.charlesngolanye.ngo.repositories.projections.CategorySummaryProjection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +20,34 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class FinancialReportService {
     private final BudgetCategoryRepository budgetCategoryRepository;
+    private final GrantRepository grantRepository;
 
-    public FinancialSummaryResponseDto getFinancialSummary() {
+    /**
+     * Overall NGO-wide financial summary across all grants.
+     */
+    public FinancialSummaryResponseDto getOverallFinancialSummary() {
         List<CategorySummaryProjection> projections = budgetCategoryRepository.getCategorySummaries();
+        return buildFinancialSummaryDto("All Grants", "ORGANIZATION-WIDE", projections);
+    }
+
+    /**
+     * Financial summary specific to a single Grant.
+     */
+    public FinancialSummaryResponseDto getGrantFinancialSummary(Long grantId) {
+        Grant grant = grantRepository.findById(grantId)
+                .orElseThrow(() -> new GrantNotFoundException("Grant not found with id: " + grantId));
+
+        List<CategorySummaryProjection> projections = budgetCategoryRepository.getCategorySummariesByGrantId(grantId);
+        return buildFinancialSummaryDto(grant.getGrantName(), grant.getGrantNumber(), projections);
+    }
+
+    /**
+     * Helper method to calculate totals and map projections to DTO.
+     */
+    private FinancialSummaryResponseDto buildFinancialSummaryDto(
+            String grantName,
+            String grantNumber,
+            List<CategorySummaryProjection> projections) {
 
         BigDecimal grandTotalAllocated = BigDecimal.ZERO;
         BigDecimal grandTotalSpent = BigDecimal.ZERO;
@@ -28,7 +56,6 @@ public class FinancialReportService {
             BigDecimal allocated = p.getAllocatedAmount() != null ? p.getAllocatedAmount() : BigDecimal.ZERO;
             BigDecimal spent = p.getSpentAmount() != null ? p.getSpentAmount() : BigDecimal.ZERO;
             BigDecimal remaining = allocated.subtract(spent);
-
             double percentageSpent = calculatePercentage(spent, allocated);
 
             return new CategorySummaryDto(
@@ -50,6 +77,8 @@ public class FinancialReportService {
         double overallPercentageSpent = calculatePercentage(grandTotalSpent, grandTotalAllocated);
 
         return new FinancialSummaryResponseDto(
+                grantName,
+                grantNumber,
                 grandTotalAllocated,
                 grandTotalSpent,
                 grandTotalRemaining,

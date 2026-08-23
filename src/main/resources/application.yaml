@@ -1,19 +1,26 @@
 spring:
   application:
    name: ngo
+  config:
+    import: "optional:file:.env[.properties]"
 
   datasource:
-    url:
-    username:
-    password:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
 
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: validate
+
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpiration: 900 # was 300 = 5m
+    refreshTokenExpiration: 604800 # 7d
 
   flyway:
     enabled: true
     locations: classpath:db/migration
-    clean-disabled: false
+
 

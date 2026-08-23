@@ -26,8 +26,14 @@ public class ExpenseRequestDto {
     private LocalDate expenseDate;
 
     @NotNull(message = "Grant ID is required")
-    private Long grantId;
+    private Long grantId;// should be grantNumber...better design?
 
     @NotNull(message = "Budget Category ID is required")
-    private Long budgetCategoryId;
+    private Long budgetCategoryId;// Fills the expense category
+
+    @NotNull(message = "Vendor/Payee is required")
+    private String vendor; // There are already loaded expenses without vendor
+
+    @NotNull(message = "Invoice/Purchase Order number is required")
+    private String referenceNumber; // represents invoice/purchase order etc number
 }

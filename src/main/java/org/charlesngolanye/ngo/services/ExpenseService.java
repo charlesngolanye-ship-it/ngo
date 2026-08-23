@@ -66,6 +66,18 @@ public class ExpenseService {
         Expense existingExpense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
 
+        if (request.getGrantId() != null) {
+            Grant grant = grantRepository.findById(request.getGrantId())
+                    .orElseThrow(() -> new GrantNotFoundException("Grant not found with id: " + request.getGrantId()));
+            existingExpense.setGrant(grant);
+        }
+
+        if (request.getBudgetCategoryId() != null) {
+            BudgetCategory category = budgetCategoryRepository.findById(request.getBudgetCategoryId())
+                    .orElseThrow(() -> new BudgetCategoryNotFoundException("Budget category not found with id: " + request.getBudgetCategoryId()));
+            existingExpense.setBudgetCategory(category);
+        }
+
         // Update the values on the managed entity cleanly
         expenseMapper.update(request, existingExpense);
 

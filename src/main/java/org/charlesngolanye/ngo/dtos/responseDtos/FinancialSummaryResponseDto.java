@@ -13,6 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FinancialSummaryResponseDto {
+    private String grantName;
+    private String grantNumber;
     private BigDecimal totalAllocated;
     private BigDecimal totalSpent;
     private BigDecimal totalRemaining;

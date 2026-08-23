@@ -7,7 +7,7 @@ import org.charlesngolanye.ngo.entities.BudgetCategory;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface BudgetCategoryMapper {
     BudgetCategory toEntity(BudgetCategoryRequestDto requestDto);
 

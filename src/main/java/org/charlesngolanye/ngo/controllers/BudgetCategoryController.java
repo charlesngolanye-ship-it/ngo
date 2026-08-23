@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/budgetCategories")
+@RequestMapping("/budget-categories")
 @Tag(name = "Budget Categories")
 public class BudgetCategoryController {
     private final BudgetCategoryService budgetCategoryService;
@@ -56,4 +56,5 @@ public class BudgetCategoryController {
         budgetCategoryService.deleteBudgetCategory(id);
         return  ResponseEntity.notFound().build();
     }
+
 }

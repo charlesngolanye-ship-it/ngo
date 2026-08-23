@@ -49,7 +49,7 @@ public class Grant {
     @OneToMany(mappedBy = "grant", cascade = CascadeType.ALL)
     private List<BudgetAllocation> budgetAllocations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "grant", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "grant", cascade = CascadeType.ALL) // Look at cascade Types...ALL will cascades to all expenses. Look at soft vs hard delete concepts (important for financial systems)
     private List<Expense> expenses = new ArrayList<>();
 
 }
@@ -60,4 +60,9 @@ public class Grant {
  * Because it can be calculated from:
  * SUM(budget_allocations.approved_amount)
  * Many financial systems avoid storing totals that can be derived from detail records, because the numbers can drift out of sync. For a real-world design, I'd be tempted to remove total_approved_budget from grants and calculate it from the allocations. That's exactly the kind of design decision architects discuss early in a project.
+ *
+ * Future improvements to ponder (Mosh)
+ * Information Expert Principle -> Assign the responsibility to the class that has the necessary data to do the job
+ * Anemic domain -> Classes that only have data (getters/setters)
+ * Rich domain -> Classes that have data and behavior(Information Expert Principle)
  */

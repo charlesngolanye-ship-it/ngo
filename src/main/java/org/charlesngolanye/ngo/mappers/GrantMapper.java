@@ -7,7 +7,7 @@ import org.charlesngolanye.ngo.entities.Grant;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring" , unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface GrantMapper {
     // Converts an incoming request payload into a DB Entity
     Grant toEntity(GrantRequestDto request);
@@ -16,4 +16,6 @@ public interface GrantMapper {
     GrantResponseDto toDto(Grant grant);
 
     void update(UpdateGrantRequest request, @MappingTarget Grant grant);
+
 }
+

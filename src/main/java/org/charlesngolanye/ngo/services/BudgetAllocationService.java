@@ -22,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BudgetAllocationService {
 
     private final BudgetAllocationRepository budgetAllocationRepository;

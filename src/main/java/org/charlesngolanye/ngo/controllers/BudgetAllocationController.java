@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/budgetAllocations")
+@RequestMapping("/budget-allocations")
 @Tag(name = "Budget Allocations")
 public class BudgetAllocationController {
     private final BudgetAllocationService budgetAllocationService;
@@ -55,19 +55,10 @@ public class BudgetAllocationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBudgetAllocation(@PathVariable Long id) {
         budgetAllocationService.deleteBudgetAllocation(id);
-        return  ResponseEntity.notFound().build();
+
+        return  ResponseEntity.noContent().build();
     }
 }
 
-/**
- * according to my chatgpt design
- * POST   /api/budgetallocations/{id}/budgets
- * GET    /api/budgetallocations/{id}/budgets
- *
- * This sub-resource URL design pattern is great when you are working with strict parent-child lifecycles.
- * However, since a BudgetAllocation is a join/relationship record linking a Grant to a Budget Category with an approved amount, the standard REST way to look at this is:
- * If you want to see all budget allocations belonging to a specific Grant, use:
- * GET /grants/{grantId}/budget-allocations
- * If you want to manage allocations as standalone records, stick to your primary endpoint:
- * POST /budgetAllocations and GET /budgetAllocations/{id}
- */
+// TODO return  ResponseEntity.notFound().build(); -> update in all delete endpoints -> discuss w Ian, as i have a different answer
+

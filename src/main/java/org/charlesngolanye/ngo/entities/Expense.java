@@ -45,4 +45,5 @@ public class Expense {
     @JoinColumn(name = "category_id")
     private BudgetCategory budgetCategory;
 
+    //TODO have lazy loading to ManyToOne relationships...at the Repository use JOINFETCH(JPQL) to avoid N+1 queries
 }

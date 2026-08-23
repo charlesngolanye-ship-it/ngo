@@ -30,4 +30,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    // todo look at server side log out vs client side logout - for now assume the client will handle the logout (client-side logout)
 }
+/**
+ * Auth Provider - building a startup, building MVP, if speed matters most (Auth0, Amazon Cognito, Firebase Authentication, Okta)
+ * Roll your own -if operating at scale, have specific requirements, want full control
+ */

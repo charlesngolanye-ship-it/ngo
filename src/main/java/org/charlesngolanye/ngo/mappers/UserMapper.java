@@ -8,7 +8,7 @@ import org.charlesngolanye.ngo.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface UserMapper {
     // Converts an incoming request payload into a DB Entity
     User toEntity(RegisterUserRequestDto request);

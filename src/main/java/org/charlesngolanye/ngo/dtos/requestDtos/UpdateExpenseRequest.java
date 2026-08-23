@@ -13,6 +13,6 @@ public class UpdateExpenseRequest {
     private LocalDate expenseDate;
     private String vendor;
     private String referenceNumber;
-    private Grant grant;
-    private BudgetCategory budgetCategory;
+    private Long grantId;
+    private Long budgetCategoryId;
 }

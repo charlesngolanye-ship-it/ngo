@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.charlesngolanye.ngo.entities.BudgetCategory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,5 +19,6 @@ public class ExpenseResponseDto {
     private BigDecimal amount;
     private LocalDate expenseDate;
     private String vendor;
-    private String referenceNumber;
+    private String referenceNumber; // represents invoice/purchase order etc number
+    private String budgetCategoryName;
 }

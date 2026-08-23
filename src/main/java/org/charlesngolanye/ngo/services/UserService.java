@@ -5,12 +5,12 @@ import org.charlesngolanye.ngo.dtos.requestDtos.ChangeUserPasswordRequest;
 import org.charlesngolanye.ngo.dtos.requestDtos.RegisterUserRequestDto;
 import org.charlesngolanye.ngo.dtos.requestDtos.UpdateUserRequest;
 import org.charlesngolanye.ngo.dtos.responseDtos.UserResponseDto;
+import org.charlesngolanye.ngo.entities.Role;
 import org.charlesngolanye.ngo.entities.User;
 import org.charlesngolanye.ngo.exceptions.UserNotFoundException;
 import org.charlesngolanye.ngo.mappers.UserMapper;
 import org.charlesngolanye.ngo.repositories.UserRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,17 +18,21 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserResponseDto createUser(RegisterUserRequestDto requestDto) {
+    public UserResponseDto registerUser(RegisterUserRequestDto requestDto) {
         if (userRepository.existsByEmailIgnoreCase(requestDto.getEmail())) {
             throw new IllegalArgumentException("A user with this email already exists.");
         }
 
         User user = userMapper.toEntity(requestDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.FINANCE_OFFICER);
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
