@@ -62,29 +62,31 @@ public class SecurityConfig {
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( c -> c
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/grants/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/grants/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT,"/grants/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/grants/**").hasRole(Role.ADMIN.name())
-
-                        .requestMatchers(HttpMethod.GET,"/expenses/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/expenses/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT,"/expenses/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/expenses/**").hasRole(Role.ADMIN.name())
-
-                        .requestMatchers(HttpMethod.GET,"/reports/**").permitAll()
-
-                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/swagger-ui.html").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-
+                        // Public Auth Endpoints (Sign up, Login, Password Reset)
                         .requestMatchers(HttpMethod.POST,"/users").permitAll()
-
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/auth/forgot-password").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/auth/reset-password").permitAll()
+
+                        // Swagger Documentation
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+
+                        // Admin Specific Endpoints
+                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+
+//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET,"/grants/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST,"/grants/**").hasRole(Role.ADMIN.name())
+//                        .requestMatchers(HttpMethod.PUT,"/grants/**").hasRole(Role.ADMIN.name())
+//                        .requestMatchers(HttpMethod.DELETE,"/grants/**").hasRole(Role.ADMIN.name())
+//                        .requestMatchers(HttpMethod.GET,"/expenses/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST,"/expenses/**").hasRole(Role.ADMIN.name())
+//                        .requestMatchers(HttpMethod.PUT,"/expenses/**").hasRole(Role.ADMIN.name())
+//                        .requestMatchers(HttpMethod.DELETE,"/expenses/**").hasRole(Role.ADMIN.name())
+//                        .requestMatchers(HttpMethod.GET,"/reports/**").permitAll()
+
+                        // All business entities (Grants, Expenses, Reports) require authentication
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
