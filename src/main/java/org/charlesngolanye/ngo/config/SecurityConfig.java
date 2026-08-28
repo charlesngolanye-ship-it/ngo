@@ -62,6 +62,10 @@ public class SecurityConfig {
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( c -> c
+
+                        // Allow all preflight OPTIONS requests to bypass authentication filters
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         // Public Auth Endpoints (Sign up, Login, Password Reset)
                         .requestMatchers(HttpMethod.POST,"/users").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
@@ -75,18 +79,6 @@ public class SecurityConfig {
                         // Admin Specific Endpoints
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
 
-//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET,"/grants/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST,"/grants/**").hasRole(Role.ADMIN.name())
-//                        .requestMatchers(HttpMethod.PUT,"/grants/**").hasRole(Role.ADMIN.name())
-//                        .requestMatchers(HttpMethod.DELETE,"/grants/**").hasRole(Role.ADMIN.name())
-//                        .requestMatchers(HttpMethod.GET,"/expenses/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST,"/expenses/**").hasRole(Role.ADMIN.name())
-//                        .requestMatchers(HttpMethod.PUT,"/expenses/**").hasRole(Role.ADMIN.name())
-//                        .requestMatchers(HttpMethod.DELETE,"/expenses/**").hasRole(Role.ADMIN.name())
-//                        .requestMatchers(HttpMethod.GET,"/reports/**").permitAll()
-
-                        // All business entities (Grants, Expenses, Reports) require authentication
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -101,17 +93,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration c = new CorsConfiguration();
-        c.setAllowedOriginPatterns(List.of("*"));
+
+        // Lovable origins & local dev frontend origins
+        c.setAllowedOriginPatterns(List.of(
+                "https://*.lovable.app",
+                "https://*.lovableproject.com",
+                "https://*.lovable.dev",
+                "http://localhost:*"
+        ));
+
         c.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        c.setAllowedHeaders(List.of("*"));
+        c.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));
+        c.setExposedHeaders(List.of("Authorization"));
+
         c.setAllowCredentials(true);
+        c.setMaxAge(3600L);
+
         UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
         src.registerCorsConfiguration("/**", c);
         return src;
     }
 }
-/*
-* permit only login,forgot pw and sign up. not grants, or any other activity - should be authenticated.
- */
