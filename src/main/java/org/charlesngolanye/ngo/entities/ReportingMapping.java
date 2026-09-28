@@ -6,37 +6,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(
-        name = "budget_allocations",
+@Table(name = "reporting_mappings",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_grant_category",
-                        columnNames = {"grant_id", "category_id"}
+                        name = "uk_template_budget_category",
+                        columnNames = {"report_template_id", "budget_category_id"}
                 )
         }
-)
-public class BudgetAllocation {
-
+        )
+public class ReportingMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "grant_id")
-    private Grant grant;
+    @JoinColumn(name = "report_template_id")
+    private ReportTemplate reportTemplate;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "budget_category_id")
     private BudgetCategory budgetCategory;
 
-    @Column(name = "approved_amount")
-    private BigDecimal approvedAmount;
-
+    @ManyToOne
+    @JoinColumn(name = "report_line_id")
+    private ReportLine reportLine;
 }

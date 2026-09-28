@@ -52,6 +52,7 @@ public class Grant {
     @OneToMany(mappedBy = "grant", cascade = CascadeType.ALL) // Look at cascade Types...ALL will cascades to all expenses. Look at soft vs hard delete concepts (important for financial systems)
     private List<Expense> expenses = new ArrayList<>();
 
+    //TODO change cascade = CascadeType.ALL
 }
 
 /**

@@ -79,6 +79,79 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(ReportingCodeNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleReportingCodeNotFound(
+            ReportingCodeNotFoundException exception
+    ) {
+        var error = new HashMap<String, String>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ReportingMappingNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleReportingMappingNotFound(
+            ReportingMappingNotFoundException exception
+    ) {
+        var error = new HashMap<String, String>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ReportingPeriodNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleReportingPeriodNotFound(
+            ReportingPeriodNotFoundException exception
+    ) {
+        var error = new HashMap<String, String>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ReportLineNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleReportLineNotFound(
+            ReportLineNotFoundException exception
+    ) {
+        var error = new HashMap<String, String>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ReportSectionNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleReportSectionNotFound(
+            ReportSectionNotFoundException exception
+    ) {
+        var error = new HashMap<String, String>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ReportTemplateNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleReportTemplateNotFound(
+            ReportTemplateNotFoundException exception
+    ) {
+        var error = new HashMap<String, String>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(
+            IllegalArgumentException exception
+    ) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGenericException(
+            Exception exception
+    ) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "An unexpected error occurred. Please try again later.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+
     //TODO // add an exception handler for throw new IllegalArgumentException
     //    // add a generic handler for exception class @ExceptionHandler(Exception.class). Ian to give example repository
 }
