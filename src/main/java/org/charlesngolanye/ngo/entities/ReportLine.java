@@ -11,7 +11,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "report_lines")
+@Table(name = "report_lines",
+        uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_section_id_display_order",
+                columnNames = {"section_id",
+                "display_order"
+                }
+        ),
+                @UniqueConstraint(
+                        name = "uk_section_id_name",
+                        columnNames = {"section_id",
+                                "name"
+                        }
+                )
+
+        })
 public class ReportLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,11 +43,11 @@ public class ReportLine {
     @Column(name = "calculation_type")
     private CalculationType calculationType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id")
     private ReportSection section;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporting_code_id")
     private ReportingCode reportingCode;
 

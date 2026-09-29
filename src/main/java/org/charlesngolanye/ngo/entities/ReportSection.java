@@ -11,7 +11,23 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "report_sections")
+@Table(name = "report_sections",
+        uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_template_code",
+                columnNames = {
+                        "template_id",
+                        "code"
+                }
+        ),
+                @UniqueConstraint(
+                        name = "uk_template_display_order",
+                        columnNames = {
+                                "template_id",
+                                "display_order"
+                        }
+                )
+        })
 public class ReportSection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +43,7 @@ public class ReportSection {
     @Column(name = "display_order")
     private Integer displayOrder;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "template_id")
     private ReportTemplate template;
 }

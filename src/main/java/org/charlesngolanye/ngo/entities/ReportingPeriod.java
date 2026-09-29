@@ -28,11 +28,8 @@ public class ReportingPeriod {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ReportingPeriodStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grant_id", nullable = false)
+    private Grant grant;
 }
-/**
- * Decision to make - whether ReportingPeriod belongs directly to Grant, to Report or both
- * For example, if it belongs to Grant
- * @ManyToOne
- * @JoinColumn(name = "grant_id")
- * private Grant grant;
- */

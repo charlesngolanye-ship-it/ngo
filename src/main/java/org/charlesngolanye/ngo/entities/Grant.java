@@ -46,13 +46,25 @@ public class Grant {
     @Column(name = "status", nullable = false)
     private GrantStatus status;
 
-    @OneToMany(mappedBy = "grant", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "grant", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<BudgetAllocation> budgetAllocations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "grant", cascade = CascadeType.ALL) // Look at cascade Types...ALL will cascades to all expenses. Look at soft vs hard delete concepts (important for financial systems)
+    @OneToMany(mappedBy = "grant", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Expense> expenses = new ArrayList<>();
 
-    //TODO change cascade = CascadeType.ALL
+    @OneToMany(mappedBy = "grant", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private  List<ReportingPeriod> reportingPeriods = new ArrayList<>();
+
+    // Helper methods for bidirectional consistency
+    public void addReportingPeriod(ReportingPeriod period) {
+        reportingPeriods.add(period);
+        period.setGrant(this);
+    }
+
+    public void removeReportingPeriod(ReportingPeriod period) {
+        reportingPeriods.remove(period);
+        period.setGrant(null);
+    }
 }
 
 /**

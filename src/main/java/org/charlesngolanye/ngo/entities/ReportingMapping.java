@@ -25,15 +25,15 @@ public class ReportingMapping {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_template_id")
     private ReportTemplate reportTemplate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "budget_category_id")
     private BudgetCategory budgetCategory;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_line_id")
     private ReportLine reportLine;
 }

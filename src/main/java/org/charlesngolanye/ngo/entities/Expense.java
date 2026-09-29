@@ -37,13 +37,11 @@ public class Expense {
     @Column(name = "reference_number")
     private String referenceNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grant_id")
     private Grant grant;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private BudgetCategory budgetCategory;
-
-    //TODO have lazy loading to ManyToOne relationships...at the Repository use JOINFETCH(JPQL) to avoid N+1 queries
 }

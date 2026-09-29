@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.charlesngolanye.ngo.dtos.requestDtos.GrantRequestDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.ReportingPeriodRequestDto;
 import org.charlesngolanye.ngo.dtos.responseDtos.GrantResponseDto;
 import org.charlesngolanye.ngo.dtos.requestDtos.UpdateGrantRequest;
+import org.charlesngolanye.ngo.dtos.responseDtos.ReportingPeriodResponseDto;
 import org.charlesngolanye.ngo.services.GrantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,23 @@ public class GrantController {
        return ResponseEntity.created(uri).body(response);
     }
 
+    @PostMapping("/{grantId}/reporting-periods")
+    @Operation(summary = "Adds a new reporting period to a specific grant.")
+    public ResponseEntity<ReportingPeriodResponseDto> addReportingPeriod(
+            @PathVariable Long grantId,
+            @Valid @RequestBody ReportingPeriodRequestDto request,
+            UriComponentsBuilder uriBuilder) {
+
+        ReportingPeriodResponseDto response = grantService.addReportingPeriod(grantId, request);
+
+        var uri = uriBuilder
+                .path("/grants/{grantId}/reporting-periods/{periodId}")
+                .buildAndExpand(grantId, response.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(response);
+    }
+
     @GetMapping
     public ResponseEntity<List<GrantResponseDto>> getAllGrants() {
         return ResponseEntity.ok(grantService.getAllGrants());
@@ -50,7 +69,7 @@ public class GrantController {
     @PutMapping("/{id}")
     public ResponseEntity<GrantResponseDto> updateGrant(
             @PathVariable (name= "id") Long id,
-            @RequestBody UpdateGrantRequest request) {
+            @Valid @RequestBody UpdateGrantRequest request) {
 
         GrantResponseDto updated = grantService.updateGrant(id, request);
         return ResponseEntity.ok(updated);
@@ -59,6 +78,16 @@ public class GrantController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGrant(@PathVariable Long id) {
         grantService.deleteGrant(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{grantId}/reporting-periods/{periodId}")
+    @Operation(summary = "Removes a reporting period from a grant.")
+    public ResponseEntity<Void> removeReportingPeriod(
+            @PathVariable Long grantId,
+            @PathVariable Long periodId) {
+
+        grantService.removeReportingPeriod(grantId, periodId);
         return ResponseEntity.noContent().build();
     }
 
