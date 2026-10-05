@@ -7,6 +7,8 @@ import org.charlesngolanye.ngo.dtos.responseDtos.ReportTemplateResponseDto;
 import org.charlesngolanye.ngo.entities.Framework;
 import org.charlesngolanye.ngo.entities.ReportTemplate;
 import org.charlesngolanye.ngo.entities.TemplateStatus;
+import org.charlesngolanye.ngo.exceptions.DuplicateResourceException;
+import org.charlesngolanye.ngo.exceptions.InvalidTemplateStateException;
 import org.charlesngolanye.ngo.exceptions.ReportTemplateNotFoundException;
 import org.charlesngolanye.ngo.mappers.ReportTemplateMapper;
 import org.charlesngolanye.ngo.repositories.ReportTemplateRepository;
@@ -23,7 +25,17 @@ public class ReportTemplateService {
     private final ReportTemplateMapper reportTemplateMapper;
 
     public ReportTemplateResponseDto create(ReportTemplateRequestDto requestDto) {
+
+        if (reportTemplateRepository.existsByFrameworkAndVersion(requestDto.getFramework(), requestDto.getVersion())) {
+            throw new DuplicateResourceException(
+                    "Report template with framework '" + requestDto.getFramework() +
+                            "' and version '" + requestDto.getVersion() + "' already exists"
+            );
+        }
+
         ReportTemplate reportTemplate = reportTemplateMapper.toEntity(requestDto);
+        reportTemplate.setTemplateStatus(TemplateStatus.ACTIVE);
+
         ReportTemplate savedReportTemplate = reportTemplateRepository.save(reportTemplate);
         return reportTemplateMapper.toDto(savedReportTemplate);
     }
@@ -68,13 +80,43 @@ public class ReportTemplateService {
         ReportTemplate reportTemplate = reportTemplateRepository.findById(id)
                 .orElseThrow(() -> new ReportTemplateNotFoundException("Report template not found with ID: " + id));
 
+        // Rule 1: CLOSED templates are completely immutable
+        if (reportTemplate.getTemplateStatus() == TemplateStatus.CLOSED) {
+            throw new InvalidTemplateStateException("Cannot modify a CLOSED report template");
+        }
+
+        // Rule 2: Cannot change Framework (e.g. EU -> ESG) on an existing template
+        if (request.getFramework() != null && request.getFramework() != reportTemplate.getFramework()) {
+            throw new InvalidTemplateStateException(
+                    "Cannot change Framework from " + reportTemplate.getFramework() + " to " + request.getFramework() +
+                            ". Create a new template instead."
+            );
+        }
+
         reportTemplateMapper.update(request, reportTemplate);
         return reportTemplateMapper.toDto(reportTemplateRepository.save(reportTemplate));
+    }
+
+    public ReportTemplateResponseDto closeTemplate(Long id) {
+        ReportTemplate template = reportTemplateRepository.findById(id)
+                .orElseThrow(() -> new ReportTemplateNotFoundException("Report template not found with ID: " + id));
+
+        if (template.getTemplateStatus() == TemplateStatus.CLOSED) {
+            return reportTemplateMapper.toDto(template); // Already closed
+        }
+
+        template.setTemplateStatus(TemplateStatus.CLOSED);
+        return reportTemplateMapper.toDto(template);
     }
 
     public void delete(Long id) {
         ReportTemplate reportTemplate = reportTemplateRepository.findById(id)
                 .orElseThrow(() -> new ReportTemplateNotFoundException("Report template not found with ID: " + id));
+
+        // Rule 3: CLOSED templates cannot be deleted because historical reports depend on them
+        if (reportTemplate.getTemplateStatus() == TemplateStatus.CLOSED) {
+            throw new InvalidTemplateStateException("Cannot delete a CLOSED template as it is required for audit history");
+        }
 
         reportTemplateRepository.delete(reportTemplate);
     }

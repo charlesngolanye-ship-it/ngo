@@ -18,4 +18,11 @@ public interface ReportTemplateRepository extends JpaRepository<ReportTemplate, 
             Framework framework,
             TemplateStatus templateStatus
     );
+
+    // Check for duplicates during creation
+    boolean existsByFrameworkAndVersion(Framework framework, String version);
+
+    // Check for duplicates during update (excluding current template ID)
+    boolean existsByFrameworkAndVersionAndIdNot(Framework framework, String version, Long id);
+
 }

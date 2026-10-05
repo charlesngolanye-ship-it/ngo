@@ -35,6 +35,9 @@ public class ReportLineService {
         ReportingCode code = reportingCodeRepository.findById(requestDto.getReportingCodeId())
                 .orElseThrow(() -> new ReportingCodeNotFoundException("Reporting code not found: " + requestDto.getReportingCodeId()));
 
+        section.getTemplate().verifyIsActive();
+
+
         if (section.getTemplate().getFramework() != code.getFramework()) {
             throw new IllegalArgumentException(
                     String.format("Cannot assign ReportingCode framework '%s' to ReportSection template framework '%s'",
@@ -42,6 +45,7 @@ public class ReportLineService {
             );
         }
 
+        
         ReportLine reportLine = reportLineMapper.toEntity(requestDto);
         // Attach fully populated managed entities
         reportLine.setSection(section);
@@ -75,22 +79,24 @@ public class ReportLineService {
         ReportLine reportLine = reportingLineRepository.findById(id)
                 .orElseThrow(() -> new ReportLineNotFoundException("Report line not found with ID: " + id));
 
+        // Verify template active state before applying updates
+        reportLine.getReportTemplate().verifyIsActive();
+
+        // Map basic fields (excluding relationships handled manually)
         reportLineMapper.update(request, reportLine);
 
-        // Validate relationships exist after update
-        if (reportLine.getSection() == null || reportLine.getSection().getId() == null) {
-            throw new IllegalArgumentException("Section ID must be provided and valid.");
-        }
-        if (reportLine.getReportingCode() == null || reportLine.getReportingCode().getId() == null) {
-            throw new IllegalArgumentException("Reporting code ID must be provided and valid.");
-        }
+        // Re-evaluate relationships safely
+        Long targetSectionId = request.getSectionId() != null ? request.getSectionId() : reportLine.getSection().getId();
+        Long targetCodeId = request.getReportingCodeId() != null ? request.getReportingCodeId() : reportLine.getReportingCode().getId();
 
-        // Fetch managed JPA entities from repositories to avoid detached proxy issues
-        ReportSection section = reportSectionRepository.findById(reportLine.getSection().getId())
-                .orElseThrow(() -> new ReportSectionNotFoundException("Section not found: " + reportLine.getSection().getId()));
+        ReportSection section = reportSectionRepository.findById(targetSectionId)
+                .orElseThrow(() -> new ReportSectionNotFoundException("Section not found: " + targetSectionId));
 
-        ReportingCode code = reportingCodeRepository.findById(reportLine.getReportingCode().getId())
-                .orElseThrow(() -> new ReportingCodeNotFoundException("Reporting code not found: " + reportLine.getReportingCode().getId()));
+        ReportingCode code = reportingCodeRepository.findById(targetCodeId)
+                .orElseThrow(() -> new ReportingCodeNotFoundException("Reporting code not found: " + targetCodeId));
+
+        // Check template status again if section changed
+        section.getTemplate().verifyIsActive();
 
         // Cross-validate framework alignment
         if (section.getTemplate().getFramework() != code.getFramework()) {
@@ -109,6 +115,9 @@ public class ReportLineService {
     public void delete(Long id) {
         ReportLine reportLine = reportingLineRepository.findById(id)
                 .orElseThrow(() -> new ReportLineNotFoundException("Report line not found with ID: " + id));
+
+        // Verify template active state before deleting line
+        reportLine.getReportTemplate().verifyIsActive();
 
         reportingLineRepository.delete(reportLine);
     }

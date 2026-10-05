@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.charlesngolanye.ngo.exceptions.InvalidTemplateStateException;
 
 @Setter
 @Getter
@@ -31,4 +32,12 @@ public class ReportTemplate {
     @Enumerated(EnumType.STRING)
     @Column(name = "template_status")
     private TemplateStatus templateStatus;
+
+
+    // Inside ReportTemplate.java
+    public void verifyIsActive() {
+        if (this.templateStatus == TemplateStatus.CLOSED) {
+            throw new InvalidTemplateStateException("Template ID " + this.id + " is CLOSED and cannot be modified.");
+        }
+    }
 }

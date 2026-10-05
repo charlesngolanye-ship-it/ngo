@@ -22,4 +22,9 @@ public interface ReportingCodeRepository extends JpaRepository<ReportingCode, Lo
     List<ReportingCode> findByFramework(
             Framework framework
     );
+
+    boolean existsByFrameworkAndCodeAndIdNot(
+            Framework framework,
+            String code,
+            Long id);
 }

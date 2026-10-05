@@ -47,12 +47,14 @@ public class ReportingCodeService {
         return reportingCodeMapper.toDto(savedReportingCode);
     }
 
+    @Transactional(readOnly = true)
     public ReportingCodeResponseDto getById(Long id) {
         ReportingCode reportingCode = reportingCodeRepository.findById(id)
                 .orElseThrow(() -> new ReportingCodeNotFoundException("Reporting code not found"));
         return reportingCodeMapper.toDto(reportingCode);
     }
 
+    @Transactional(readOnly = true)
     public List<ReportingCodeResponseDto> getAll() {
         return reportingCodeRepository.findAll()
                 .stream()
@@ -60,6 +62,7 @@ public class ReportingCodeService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ReportingCodeResponseDto> getByFramework(Framework framework) {
         if (framework == null) {
             throw new IllegalArgumentException("Framework must not be null");
@@ -73,6 +76,29 @@ public class ReportingCodeService {
         ReportingCode reportingCode = reportingCodeRepository.findById(id)
                 .orElseThrow(() -> new ReportingCodeNotFoundException("Reporting code not found"));
         reportingCodeMapper.update(request, reportingCode);
+
+        // Apply partial update mapping
+        reportingCodeMapper.update(request, reportingCode);
+
+        // Post-mapping validations
+        if (reportingCode.getFramework() == null) {
+            throw new IllegalArgumentException("Framework cannot be set to null");
+        }
+
+        if (reportingCode.getCode() == null || reportingCode.getCode().isBlank()) {
+            throw new IllegalArgumentException("Reporting code cannot be blank");
+        }
+
+        // Uniqueness check excluding current entity
+        boolean existsDuplicate = reportingCodeRepository.existsByFrameworkAndCodeAndIdNot(
+                reportingCode.getFramework(),
+                reportingCode.getCode(),
+                id
+        );
+
+        if (existsDuplicate) {
+            throw new IllegalArgumentException("Reporting code already exists for this framework");
+        }
 
         return reportingCodeMapper.toDto(reportingCodeRepository.save(reportingCode));
     }

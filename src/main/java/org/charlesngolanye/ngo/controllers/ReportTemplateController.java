@@ -70,6 +70,15 @@ public class ReportTemplateController {
         return ResponseEntity.ok(reportTemplateService.update(id, request));
     }
 
+    @PatchMapping("/{id}/close")
+    @Operation(summary = "Closes a Report template to make it read-only for historical auditing.")
+    public ResponseEntity<ReportTemplateResponseDto> closeTemplate(
+            @Parameter(description = "The ID of the Report template to close.")
+            @PathVariable("id") Long id) {
+
+        return ResponseEntity.ok(reportTemplateService.closeTemplate(id));
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletes a Report template by ID.")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {

@@ -34,6 +34,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    // Lifecycle state violation (e.g. modifying CLOSED templates)
+    @ExceptionHandler(InvalidTemplateStateException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidTemplateState(
+            InvalidTemplateStateException exception
+    ) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    // Duplicate entity creation (e.g. duplicate framework + version)
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicateResource(
+            DuplicateResourceException exception
+    ) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(GrantNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleGrantNotFound(
             GrantNotFoundException exception

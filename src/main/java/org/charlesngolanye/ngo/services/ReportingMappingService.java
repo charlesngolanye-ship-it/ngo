@@ -34,6 +34,8 @@ public class ReportingMappingService {
                 .orElseThrow(() -> new ReportTemplateNotFoundException(
                         "Report template not found with ID: " + requestDto.getReportTemplateId()));
 
+        template.verifyIsActive();
+
         ReportLine reportLine = reportingLineRepository.findById(requestDto.getReportLineId())
                 .orElseThrow(() -> new ReportLineNotFoundException(
                         "Report line not found with ID: " + requestDto.getReportLineId()));
@@ -96,18 +98,36 @@ public class ReportingMappingService {
         ReportingMapping reportingMapping = reportMappingRepository.findById(id)
                 .orElseThrow(() -> new ReportingMappingNotFoundException("Reporting mapping not found with ID: " + id));
 
-        reportMappingMapper.update(request, reportingMapping);
+        // Verify current template status before modifications
+        reportingMapping.getReportTemplate().verifyIsActive();
 
-        ReportTemplate template = reportTemplateRepository.findById(reportingMapping.getReportTemplate().getId())
-                .orElseThrow(() -> new ReportTemplateNotFoundException("Report template not found"));
+        // 2. Resolve safe target IDs before applying structural mapper updates
+        Long targetTemplateId = request.getReportTemplateId() != null
+                ? request.getReportTemplateId()
+                : reportingMapping.getReportTemplate().getId();
 
-        ReportLine reportLine = reportingLineRepository.findById(reportingMapping.getReportLine().getId())
-                .orElseThrow(() -> new ReportLineNotFoundException("Report line not found"));
+        Long targetLineId = request.getReportLineId() != null
+                ? request.getReportLineId()
+                : reportingMapping.getReportLine().getId();
 
-        BudgetCategory budgetCategory = budgetCategoryRepository.findById(reportingMapping.getBudgetCategory().getId())
-                .orElseThrow(() -> new BudgetCategoryNotFoundException("Budget category not found"));
+        Long targetCategoryId = request.getBudgetCategoryId() != null
+                ? request.getBudgetCategoryId()
+                : reportingMapping.getBudgetCategory().getId();
 
-        // Check duplicate mapping excluding current mapping ID
+        // 3. Fetch managed entities
+        ReportTemplate template = reportTemplateRepository.findById(targetTemplateId)
+                .orElseThrow(() -> new ReportTemplateNotFoundException("Report template not found with ID: " + targetTemplateId));
+
+        ReportLine reportLine = reportingLineRepository.findById(targetLineId)
+                .orElseThrow(() -> new ReportLineNotFoundException("Report line not found with ID: " + targetLineId));
+
+        BudgetCategory budgetCategory = budgetCategoryRepository.findById(targetCategoryId)
+                .orElseThrow(() -> new BudgetCategoryNotFoundException("Budget category not found with ID: " + targetCategoryId));
+
+        // Ensure target template is active if template association changed
+        template.verifyIsActive();
+
+        // 4. Validate duplicate mappings excluding current record
         boolean existsOther = reportMappingRepository
                 .existsByReportTemplateIdAndBudgetCategoryIdAndIdNot(
                         template.getId(), budgetCategory.getId(), id);
@@ -116,8 +136,16 @@ public class ReportingMappingService {
             throw new IllegalArgumentException("Budget category is already mapped to another entry in this template");
         }
 
+        // 5. Cross-domain validations
         validateReportLineBelongsToTemplate(reportLine, template);
         validateFrameworkConsistency(reportLine, template);
+
+
+        // 6. Map updates and assign managed entities
+        reportMappingMapper.update(request, reportingMapping);
+        reportingMapping.setReportTemplate(template);
+        reportingMapping.setReportLine(reportLine);
+        reportingMapping.setBudgetCategory(budgetCategory);
 
         return reportMappingMapper.toDto(reportMappingRepository.save(reportingMapping));
     }
@@ -125,6 +153,8 @@ public class ReportingMappingService {
     public void delete(Long id) {
         ReportingMapping reportingMapping = reportMappingRepository.findById(id)
                 .orElseThrow(() -> new ReportingMappingNotFoundException("Reporting mapping not found"));
+
+        reportingMapping.getReportTemplate().verifyIsActive();
 
         reportMappingRepository.delete(reportingMapping);
     }
