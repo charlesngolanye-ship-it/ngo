@@ -1,8 +1,8 @@
 package org.charlesngolanye.ngo.mappers;
 
-import org.charlesngolanye.ngo.dtos.requestDtos.ReportMappingRequestDto;
-import org.charlesngolanye.ngo.dtos.requestDtos.UpdateReportMappingRequest;
-import org.charlesngolanye.ngo.dtos.responseDtos.ReportMappingResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.ReportingMappingRequestDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateReportingMappingRequest;
+import org.charlesngolanye.ngo.dtos.responseDtos.ReportingMappingResponseDto;
 import org.charlesngolanye.ngo.entities.ReportingMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,22 +12,22 @@ import org.mapstruct.ReportingPolicy;
 import java.util.List;
 
 @Mapper(componentModel = "spring" , unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface ReportMappingMapper {
+public interface ReportingMappingMapper {
 
     // Converts an incoming request payload into a DB Entity
     @Mapping(target = "reportTemplate.id", source = "reportTemplateId")
     @Mapping(target = "budgetCategory.id", source = "budgetCategoryId")
     @Mapping(target = "reportLine.id", source = "reportLineId")
-     ReportingMapping toEntity(ReportMappingRequestDto request);
+     ReportingMapping toEntity(ReportingMappingRequestDto request);
 
     // Converts a DB Entity into an outgoing response payload
-    ReportMappingResponseDto toDto(ReportingMapping reportingMapping);
+    ReportingMappingResponseDto toDto(ReportingMapping reportingMapping);
 
-    List<ReportMappingResponseDto> toDtoList(List<ReportingMapping> reportingMappings);
+    List<ReportingMappingResponseDto> toDtoList(List<ReportingMapping> reportingMappings);
 
     @Mapping(target = "reportTemplate.id", source = "reportTemplateId")
     @Mapping(target = "budgetCategory.id", source = "budgetCategoryId")
     @Mapping(target = "reportLine.id", source = "reportLineId")
-    void update(UpdateReportMappingRequest request, @MappingTarget ReportingMapping reportingMapping);
+    void update(UpdateReportingMappingRequest request, @MappingTarget ReportingMapping reportingMapping);
 }
 

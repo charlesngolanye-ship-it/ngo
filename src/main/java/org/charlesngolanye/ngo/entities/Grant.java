@@ -67,7 +67,7 @@ public class Grant {
     }
 }
 
-/**
+/*
  * One thing I'd challenge before you create all tables:
  * Do you want total_approved_budget stored in the grants table at all?
  * Because it can be calculated from:
@@ -78,4 +78,17 @@ public class Grant {
  * Information Expert Principle -> Assign the responsibility to the class that has the necessary data to do the job
  * Anemic domain -> Classes that only have data (getters/setters)
  * Rich domain -> Classes that have data and behavior(Information Expert Principle)
+ *
+ * However, you probably eventually need:
+Grant
+   ↓
+Reporting periods
+
+Period A: Jan-Jun
+Period B: Jul-Dec
+and rules preventing invalid overlaps.
+For example:
+Jan-Jun
+May-Aug
+should probably be rejected for the same grant.
  */

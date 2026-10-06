@@ -1,19 +1,19 @@
 package org.charlesngolanye.ngo.services;
 
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.requestDtos.ReportMappingRequestDto;
-import org.charlesngolanye.ngo.dtos.requestDtos.UpdateReportMappingRequest;
-import org.charlesngolanye.ngo.dtos.responseDtos.ReportMappingResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.ReportingMappingRequestDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateReportingMappingRequest;
+import org.charlesngolanye.ngo.dtos.responseDtos.ReportingMappingResponseDto;
 import org.charlesngolanye.ngo.entities.*;
 import org.charlesngolanye.ngo.exceptions.BudgetCategoryNotFoundException;
 import org.charlesngolanye.ngo.exceptions.ReportLineNotFoundException;
 import org.charlesngolanye.ngo.exceptions.ReportTemplateNotFoundException;
 import org.charlesngolanye.ngo.exceptions.ReportingMappingNotFoundException;
-import org.charlesngolanye.ngo.mappers.ReportMappingMapper;
+import org.charlesngolanye.ngo.mappers.ReportingMappingMapper;
 import org.charlesngolanye.ngo.repositories.BudgetCategoryRepository;
-import org.charlesngolanye.ngo.repositories.ReportMappingRepository;
+import org.charlesngolanye.ngo.repositories.ReportingMappingRepository;
 import org.charlesngolanye.ngo.repositories.ReportTemplateRepository;
-import org.charlesngolanye.ngo.repositories.ReportingLineRepository;
+import org.charlesngolanye.ngo.repositories.ReportLineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,20 +23,20 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class ReportingMappingService {
-    private final ReportMappingRepository reportMappingRepository;
+    private final ReportingMappingRepository reportingMappingRepository;
     private final ReportTemplateRepository reportTemplateRepository;
-    private final ReportingLineRepository reportingLineRepository;
+    private final ReportLineRepository reportLineRepository;
     private final BudgetCategoryRepository budgetCategoryRepository;
-    private final ReportMappingMapper reportMappingMapper;
+    private final ReportingMappingMapper reportingMappingMapper;
 
-    public ReportMappingResponseDto create(ReportMappingRequestDto requestDto) {
+    public ReportingMappingResponseDto create(ReportingMappingRequestDto requestDto) {
         ReportTemplate template = reportTemplateRepository.findById(requestDto.getReportTemplateId())
                 .orElseThrow(() -> new ReportTemplateNotFoundException(
                         "Report template not found with ID: " + requestDto.getReportTemplateId()));
 
         template.verifyIsActive();
 
-        ReportLine reportLine = reportingLineRepository.findById(requestDto.getReportLineId())
+        ReportLine reportLine = reportLineRepository.findById(requestDto.getReportLineId())
                 .orElseThrow(() -> new ReportLineNotFoundException(
                         "Report line not found with ID: " + requestDto.getReportLineId()));
 
@@ -49,53 +49,53 @@ public class ReportingMappingService {
         validateFrameworkConsistency(reportLine, template);
 
         // 2. Unique mapping check
-        if (reportMappingRepository.existsByReportTemplateIdAndBudgetCategoryId(
+        if (reportingMappingRepository.existsByReportTemplateIdAndBudgetCategoryId(
                 template.getId(), budgetCategory.getId())) {
             throw new IllegalArgumentException("Budget category is already mapped in this template");
         }
 
         // 3. Map and attach managed entities
-        ReportingMapping mapping = reportMappingMapper.toEntity(requestDto);
+        ReportingMapping mapping = reportingMappingMapper.toEntity(requestDto);
         mapping.setReportTemplate(template);
         mapping.setReportLine(reportLine);
         mapping.setBudgetCategory(budgetCategory);
 
-        return reportMappingMapper.toDto(reportMappingRepository.save(mapping));
+        return reportingMappingMapper.toDto(reportingMappingRepository.save(mapping));
     }
 
     @Transactional(readOnly = true)
-    public ReportMappingResponseDto getById(Long id) {
-        ReportingMapping reportingMapping = reportMappingRepository.findById(id)
+    public ReportingMappingResponseDto getById(Long id) {
+        ReportingMapping reportingMapping = reportingMappingRepository.findById(id)
                 .orElseThrow(() -> new ReportingMappingNotFoundException("Reporting mapping not found"));
-        return reportMappingMapper.toDto(reportingMapping);
+        return reportingMappingMapper.toDto(reportingMapping);
     }
 
     @Transactional(readOnly = true)
-    public List<ReportMappingResponseDto> getAll() {
-        return reportMappingRepository.findAll()
+    public List<ReportingMappingResponseDto> getAll() {
+        return reportingMappingRepository.findAll()
                 .stream()
-                .map(reportMappingMapper::toDto)
+                .map(reportingMappingMapper::toDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public ReportMappingResponseDto getByReportTemplateIdAndBudgetCategoryId
+    public ReportingMappingResponseDto getByReportTemplateIdAndBudgetCategoryId
             (Long reportTemplateId, Long budgetCategoryId) {
 
         if (reportTemplateId == null || budgetCategoryId == null) {
             throw new IllegalArgumentException("Report template ID and Budget category ID must not be null");
         }
 
-        ReportingMapping reportingMapping = reportMappingRepository
+        ReportingMapping reportingMapping = reportingMappingRepository
                 .findByReportTemplateIdAndBudgetCategoryId(reportTemplateId, budgetCategoryId)
                 .orElseThrow(() -> new ReportingMappingNotFoundException(
                         "Reporting mapping not found for template ID " + reportTemplateId + " and budget category ID " + budgetCategoryId));
 
-        return reportMappingMapper.toDto(reportingMapping);
+        return reportingMappingMapper.toDto(reportingMapping);
     }
 
-    public ReportMappingResponseDto update(Long id, UpdateReportMappingRequest request) {
-        ReportingMapping reportingMapping = reportMappingRepository.findById(id)
+    public ReportingMappingResponseDto update(Long id, UpdateReportingMappingRequest request) {
+        ReportingMapping reportingMapping = reportingMappingRepository.findById(id)
                 .orElseThrow(() -> new ReportingMappingNotFoundException("Reporting mapping not found with ID: " + id));
 
         // Verify current template status before modifications
@@ -118,7 +118,7 @@ public class ReportingMappingService {
         ReportTemplate template = reportTemplateRepository.findById(targetTemplateId)
                 .orElseThrow(() -> new ReportTemplateNotFoundException("Report template not found with ID: " + targetTemplateId));
 
-        ReportLine reportLine = reportingLineRepository.findById(targetLineId)
+        ReportLine reportLine = reportLineRepository.findById(targetLineId)
                 .orElseThrow(() -> new ReportLineNotFoundException("Report line not found with ID: " + targetLineId));
 
         BudgetCategory budgetCategory = budgetCategoryRepository.findById(targetCategoryId)
@@ -128,7 +128,7 @@ public class ReportingMappingService {
         template.verifyIsActive();
 
         // 4. Validate duplicate mappings excluding current record
-        boolean existsOther = reportMappingRepository
+        boolean existsOther = reportingMappingRepository
                 .existsByReportTemplateIdAndBudgetCategoryIdAndIdNot(
                         template.getId(), budgetCategory.getId(), id);
 
@@ -142,21 +142,21 @@ public class ReportingMappingService {
 
 
         // 6. Map updates and assign managed entities
-        reportMappingMapper.update(request, reportingMapping);
+        reportingMappingMapper.update(request, reportingMapping);
         reportingMapping.setReportTemplate(template);
         reportingMapping.setReportLine(reportLine);
         reportingMapping.setBudgetCategory(budgetCategory);
 
-        return reportMappingMapper.toDto(reportMappingRepository.save(reportingMapping));
+        return reportingMappingMapper.toDto(reportingMappingRepository.save(reportingMapping));
     }
 
     public void delete(Long id) {
-        ReportingMapping reportingMapping = reportMappingRepository.findById(id)
+        ReportingMapping reportingMapping = reportingMappingRepository.findById(id)
                 .orElseThrow(() -> new ReportingMappingNotFoundException("Reporting mapping not found"));
 
         reportingMapping.getReportTemplate().verifyIsActive();
 
-        reportMappingRepository.delete(reportingMapping);
+        reportingMappingRepository.delete(reportingMapping);
     }
 
 

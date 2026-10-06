@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ReportingLineRepository extends JpaRepository<ReportLine,  Long> {
+public interface ReportLineRepository extends JpaRepository<ReportLine,  Long> {
     List<ReportLine> findBySectionIdOrderByDisplayOrderAsc(
             Long sectionId
     );

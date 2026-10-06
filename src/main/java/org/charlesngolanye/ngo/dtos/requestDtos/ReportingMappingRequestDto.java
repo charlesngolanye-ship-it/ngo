@@ -1,10 +1,16 @@
 package org.charlesngolanye.ngo.dtos.requestDtos;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-public class UpdateReportMappingRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class ReportingMappingRequestDto {
     @NotNull
     private Long reportTemplateId;
 

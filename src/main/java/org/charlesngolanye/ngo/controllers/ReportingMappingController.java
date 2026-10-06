@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.charlesngolanye.ngo.dtos.requestDtos.ReportMappingRequestDto;
-import org.charlesngolanye.ngo.dtos.requestDtos.UpdateReportMappingRequest;
-import org.charlesngolanye.ngo.dtos.responseDtos.ReportMappingResponseDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.ReportingMappingRequestDto;
+import org.charlesngolanye.ngo.dtos.requestDtos.UpdateReportingMappingRequest;
+import org.charlesngolanye.ngo.dtos.responseDtos.ReportingMappingResponseDto;
 import org.charlesngolanye.ngo.services.ReportingMappingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +24,10 @@ public class ReportingMappingController {
 
     @PostMapping
     @Operation(summary = "Creates a new Reporting mapping.")
-    public ResponseEntity<ReportMappingResponseDto> create
-            (@Valid @RequestBody ReportMappingRequestDto requestDto,
+    public ResponseEntity<ReportingMappingResponseDto> create
+            (@Valid @RequestBody ReportingMappingRequestDto requestDto,
              UriComponentsBuilder uriBuilder) {
-        ReportMappingResponseDto response = reportingMappingService.create(requestDto);
+        ReportingMappingResponseDto response = reportingMappingService.create(requestDto);
 
         var uri = uriBuilder.path("/reporting_mappings/{id}").buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(uri).body(response);
@@ -35,35 +35,35 @@ public class ReportingMappingController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Gets Report mapping by ID.")
-    public ResponseEntity<ReportMappingResponseDto> getById (
+    public ResponseEntity<ReportingMappingResponseDto> getById (
             @Parameter(description = "The ID of Report mapping.")
             @PathVariable("id") Long id) {
-        ReportMappingResponseDto responseDto = reportingMappingService.getById(id);
+        ReportingMappingResponseDto responseDto = reportingMappingService.getById(id);
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/template/{templateId}/category/{categoryId}")
     @Operation(summary = "Gets Report mapping by templateId and budgetId.")
-    public ResponseEntity<ReportMappingResponseDto> getByReportTemplateIdAndBudgetCategoryId (
+    public ResponseEntity<ReportingMappingResponseDto> getByReportTemplateIdAndBudgetCategoryId (
             @PathVariable("templateId") Long reportTemplateId,
             @PathVariable("categoryId") Long budgetCategoryId) {
-        ReportMappingResponseDto responseDto = reportingMappingService.
+        ReportingMappingResponseDto responseDto = reportingMappingService.
                 getByReportTemplateIdAndBudgetCategoryId(reportTemplateId, budgetCategoryId);
 
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<ReportMappingResponseDto>> getAll() {
+    public ResponseEntity<List<ReportingMappingResponseDto>> getAll() {
         return ResponseEntity.ok(reportingMappingService.getAll());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReportMappingResponseDto> update(
+    public ResponseEntity<ReportingMappingResponseDto> update(
             @PathVariable("id") Long id,
-            @Valid @RequestBody UpdateReportMappingRequest request) {
+            @Valid @RequestBody UpdateReportingMappingRequest request) {
 
-        ReportMappingResponseDto updated = reportingMappingService.update(id, request);
+        ReportingMappingResponseDto updated = reportingMappingService.update(id, request);
         return ResponseEntity.ok(updated);
     }
 

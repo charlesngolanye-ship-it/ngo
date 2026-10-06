@@ -75,7 +75,7 @@ public class ReportingCodeService {
     public ReportingCodeResponseDto update(Long id, UpdateReportingCodeRequest request) {
         ReportingCode reportingCode = reportingCodeRepository.findById(id)
                 .orElseThrow(() -> new ReportingCodeNotFoundException("Reporting code not found"));
-        reportingCodeMapper.update(request, reportingCode);
+        //reportingCodeMapper.update(request, reportingCode);
 
         // Apply partial update mapping
         reportingCodeMapper.update(request, reportingCode);
@@ -111,3 +111,15 @@ public class ReportingCodeService {
     }
 
 }
+/*
+ * I'd eventually make reporting codes more immutable once they're used.
+ * For example:
+ * DRAFT code
+ *     ↓
+ * can edit
+ *
+ * USED BY REPORT LINE
+ *     ↓
+ * code/framework becomes immutable
+ * That is a domain-level rule rather than merely a CRUD rule.
+ */

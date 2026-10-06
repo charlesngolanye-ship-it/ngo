@@ -1,6 +1,5 @@
 package org.charlesngolanye.ngo.dtos.responseDtos;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ import org.charlesngolanye.ngo.entities.ReportTemplate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ReportMappingResponseDto {
+public class ReportingMappingResponseDto {
     private Long id;
     private ReportTemplate reportTemplate;
     private BudgetCategory budgetCategory;

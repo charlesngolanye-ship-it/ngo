@@ -13,7 +13,7 @@ import org.charlesngolanye.ngo.exceptions.ReportingCodeNotFoundException;
 import org.charlesngolanye.ngo.mappers.ReportLineMapper;
 import org.charlesngolanye.ngo.repositories.ReportSectionRepository;
 import org.charlesngolanye.ngo.repositories.ReportingCodeRepository;
-import org.charlesngolanye.ngo.repositories.ReportingLineRepository;
+import org.charlesngolanye.ngo.repositories.ReportLineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class ReportLineService {
-    private final ReportingLineRepository reportingLineRepository;
+    private final ReportLineRepository reportLineRepository;
     private final ReportSectionRepository reportSectionRepository;
     private final ReportingCodeRepository reportingCodeRepository;
     private final ReportLineMapper reportLineMapper;
@@ -51,19 +51,19 @@ public class ReportLineService {
         reportLine.setSection(section);
         reportLine.setReportingCode(code);
 
-        return reportLineMapper.toDto(reportingLineRepository.save(reportLine));
+        return reportLineMapper.toDto(reportLineRepository.save(reportLine));
     }
 
     @Transactional(readOnly = true)
     public ReportLineResponseDto getById(Long id) {
-        ReportLine reportLine = reportingLineRepository.findById(id)
+        ReportLine reportLine = reportLineRepository.findById(id)
                 .orElseThrow(() -> new ReportLineNotFoundException("Report line not found with ID: " + id));
         return reportLineMapper.toDto(reportLine);
     }
 
     @Transactional(readOnly = true)
     public List<ReportLineResponseDto> getAll() {
-        return reportLineMapper.toDtoList(reportingLineRepository.findAll());
+        return reportLineMapper.toDtoList(reportLineRepository.findAll());
     }
 
     @Transactional(readOnly = true)
@@ -71,12 +71,12 @@ public class ReportLineService {
         if (sectionId == null) {
             throw new IllegalArgumentException("Section ID must not be null");
         }
-        List<ReportLine> reportLines = reportingLineRepository.findBySectionIdOrderByDisplayOrderAsc(sectionId);
+        List<ReportLine> reportLines = reportLineRepository.findBySectionIdOrderByDisplayOrderAsc(sectionId);
         return reportLineMapper.toDtoList(reportLines);
     }
 
     public ReportLineResponseDto update(Long id, UpdateReportLineRequest request) {
-        ReportLine reportLine = reportingLineRepository.findById(id)
+        ReportLine reportLine = reportLineRepository.findById(id)
                 .orElseThrow(() -> new ReportLineNotFoundException("Report line not found with ID: " + id));
 
         // Verify template active state before applying updates
@@ -109,16 +109,16 @@ public class ReportLineService {
         reportLine.setSection(section);
         reportLine.setReportingCode(code);
 
-        return reportLineMapper.toDto(reportingLineRepository.save(reportLine));
+        return reportLineMapper.toDto(reportLineRepository.save(reportLine));
     }
 
     public void delete(Long id) {
-        ReportLine reportLine = reportingLineRepository.findById(id)
+        ReportLine reportLine = reportLineRepository.findById(id)
                 .orElseThrow(() -> new ReportLineNotFoundException("Report line not found with ID: " + id));
 
         // Verify template active state before deleting line
         reportLine.getReportTemplate().verifyIsActive();
 
-        reportingLineRepository.delete(reportLine);
+        reportLineRepository.delete(reportLine);
     }
 }
