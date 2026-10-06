@@ -118,14 +118,7 @@ public class ReportTemplateService {
             throw new InvalidTemplateStateException("Cannot delete a CLOSED template as it is required for audit history");
         }
 
-        // Rule 2: Cannot delete if historical reports depend on it
-        if (reportTemplateRepository.isUsedInGeneratedReports(id)) {
-            throw new InvalidTemplateStateException(
-                    "Cannot delete Report Template ID " + id + " because generated financial reports are associated with it."
-            );
-        }
-
-        // Rule 3: Cannot delete if template still has child sections/lines/mappings
+        // Rule 2: Cannot delete if template still has child sections/lines/mappings
         if (reportTemplateRepository.hasChildSections(id)) {
             throw new InvalidTemplateStateException(
                     "Cannot delete Report Template ID " + id + " because it still contains child sections. Remove child elements first."

@@ -28,10 +28,7 @@ public interface ReportTemplateRepository extends JpaRepository<ReportTemplate, 
     boolean existsByFrameworkAndVersionAndIdNot(Framework framework, String version, Long id);
 
     // Dependency check queries for deletion guard
-    @Query("SELECT COUNT(s) > 0 FROM Section s WHERE s.reportTemplate.id = :templateId")
+    @Query("SELECT COUNT(s) > 0 FROM ReportSection s WHERE s.template.id = :templateId")
     boolean hasChildSections(@Param("templateId") Long templateId);
-
-    @Query("SELECT COUNT(r) > 0 FROM Report r WHERE r.reportTemplate.id = :templateId")
-    boolean isUsedInGeneratedReports(@Param("templateId") Long templateId);
 
 }
