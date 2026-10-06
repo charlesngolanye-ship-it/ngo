@@ -4,10 +4,12 @@ import org.charlesngolanye.ngo.dtos.requestDtos.ReportingPeriodRequestDto;
 import org.charlesngolanye.ngo.dtos.requestDtos.UpdateReportingPeriodRequest;
 import org.charlesngolanye.ngo.dtos.responseDtos.ReportingPeriodResponseDto;
 import org.charlesngolanye.ngo.entities.ReportingPeriod;
+import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
+@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface ReportingPeriodMapper {
     ReportingPeriod toEntity(ReportingPeriodRequestDto request);
 
