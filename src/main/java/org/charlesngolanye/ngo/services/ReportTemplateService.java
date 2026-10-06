@@ -113,9 +113,23 @@ public class ReportTemplateService {
         ReportTemplate reportTemplate = reportTemplateRepository.findById(id)
                 .orElseThrow(() -> new ReportTemplateNotFoundException("Report template not found with ID: " + id));
 
-        // Rule 3: CLOSED templates cannot be deleted because historical reports depend on them
+        // Rule 1: CLOSED templates cannot be deleted because historical reports depend on them
         if (reportTemplate.getTemplateStatus() == TemplateStatus.CLOSED) {
             throw new InvalidTemplateStateException("Cannot delete a CLOSED template as it is required for audit history");
+        }
+
+        // Rule 2: Cannot delete if historical reports depend on it
+        if (reportTemplateRepository.isUsedInGeneratedReports(id)) {
+            throw new InvalidTemplateStateException(
+                    "Cannot delete Report Template ID " + id + " because generated financial reports are associated with it."
+            );
+        }
+
+        // Rule 3: Cannot delete if template still has child sections/lines/mappings
+        if (reportTemplateRepository.hasChildSections(id)) {
+            throw new InvalidTemplateStateException(
+                    "Cannot delete Report Template ID " + id + " because it still contains child sections. Remove child elements first."
+            );
         }
 
         reportTemplateRepository.delete(reportTemplate);
