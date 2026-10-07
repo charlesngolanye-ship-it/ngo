@@ -17,4 +17,5 @@ public class ReportingPeriodResponseDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private ReportingPeriodStatus status;
+    private Long grantId;
 }

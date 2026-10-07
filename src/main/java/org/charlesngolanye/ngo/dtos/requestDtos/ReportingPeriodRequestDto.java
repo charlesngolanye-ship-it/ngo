@@ -22,4 +22,7 @@ public class ReportingPeriodRequestDto {
 
     @NotNull(message = "Status is required")
     private ReportingPeriodStatus status;
+
+    @NotNull(message = "Grant ID is required")
+    private Long grantId;
 }

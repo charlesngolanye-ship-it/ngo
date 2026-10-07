@@ -14,12 +14,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UpdateReportingPeriodRequest {
-    @NotNull
+    @NotNull(message = "Start date is required")
     private LocalDate startDate;
 
-    @NotNull
+    @NotNull(message = "End date is required")
     private LocalDate endDate;
 
-    @NotNull
+    @NotNull(message = "Status is required")
     private ReportingPeriodStatus status;
 }

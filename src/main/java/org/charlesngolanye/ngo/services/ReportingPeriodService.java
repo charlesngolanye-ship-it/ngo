@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.charlesngolanye.ngo.dtos.requestDtos.ReportingPeriodRequestDto;
 import org.charlesngolanye.ngo.dtos.requestDtos.UpdateReportingPeriodRequest;
 import org.charlesngolanye.ngo.dtos.responseDtos.ReportingPeriodResponseDto;
+import org.charlesngolanye.ngo.entities.Grant;
 import org.charlesngolanye.ngo.entities.ReportingPeriod;
 import org.charlesngolanye.ngo.entities.ReportingPeriodStatus;
+import org.charlesngolanye.ngo.exceptions.GrantNotFoundException;
 import org.charlesngolanye.ngo.exceptions.ReportingPeriodNotFoundException;
 import org.charlesngolanye.ngo.mappers.ReportingPeriodMapper;
+import org.charlesngolanye.ngo.repositories.GrantRepository;
 import org.charlesngolanye.ngo.repositories.ReportingPeriodRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +22,18 @@ import java.util.List;
 @Transactional
 public class ReportingPeriodService {
     private final ReportingPeriodRepository reportingPeriodRepository;
+    private final GrantRepository grantRepository;
     private final ReportingPeriodMapper reportingPeriodMapper;
 
     public ReportingPeriodResponseDto create(ReportingPeriodRequestDto requestDto) {
         validateDates(requestDto.getStartDate(), requestDto.getEndDate());
 
+        Grant grant = grantRepository.findById(requestDto.getGrantId())
+                .orElseThrow(() -> new GrantNotFoundException("Grant not found with ID: " + requestDto.getGrantId()));
+
         ReportingPeriod reportingPeriod = reportingPeriodMapper.toEntity(requestDto);
+        reportingPeriod.setGrant(grant);
+
         ReportingPeriod savedReportingPeriod = reportingPeriodRepository.save(reportingPeriod);
         return reportingPeriodMapper.toDto(savedReportingPeriod);
     }
