@@ -6,6 +6,7 @@ import org.charlesngolanye.ngo.dtos.requestDtos.ReportingCodeRequestDto;
 import org.charlesngolanye.ngo.dtos.responseDtos.ReportingCodeResponseDto;
 import org.charlesngolanye.ngo.entities.Framework;
 import org.charlesngolanye.ngo.entities.ReportingCode;
+import org.charlesngolanye.ngo.exceptions.DuplicateResourceException;
 import org.charlesngolanye.ngo.exceptions.ReportingCodeNotFoundException;
 import org.charlesngolanye.ngo.mappers.ReportingCodeMapper;
 import org.charlesngolanye.ngo.repositories.ReportingCodeRepository;
@@ -37,7 +38,7 @@ public class ReportingCodeService {
                 reportingCode.getFramework(),
                 reportingCode.getCode())) {
 
-            throw new IllegalArgumentException(
+            throw new DuplicateResourceException(
                     "Reporting code already exists for this framework"
             );
         }
@@ -97,7 +98,7 @@ public class ReportingCodeService {
         );
 
         if (existsDuplicate) {
-            throw new IllegalArgumentException("Reporting code already exists for this framework");
+            throw new DuplicateResourceException("Reporting code already exists for this framework");
         }
 
         return reportingCodeMapper.toDto(reportingCodeRepository.save(reportingCode));

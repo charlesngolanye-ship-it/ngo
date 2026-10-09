@@ -34,7 +34,7 @@ public class ReportTemplate {
     private TemplateStatus templateStatus;
 
 
-    // Inside ReportTemplate.java
+    // Instead of every service independently verifying, put inside ReportTemplate.java
     public void verifyIsActive() {
         if (this.templateStatus == TemplateStatus.CLOSED) {
             throw new InvalidTemplateStateException("Template ID " + this.id + " is CLOSED and cannot be modified.");

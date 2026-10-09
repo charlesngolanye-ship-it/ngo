@@ -20,9 +20,6 @@ public class ReportingPeriodRequestDto {
     @NotNull(message = "End date is required")
     private LocalDate endDate;
 
-    @NotNull(message = "Status is required")
-    private ReportingPeriodStatus status;
-
     @NotNull(message = "Grant ID is required")
     private Long grantId;
 }

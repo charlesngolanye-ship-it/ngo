@@ -33,6 +33,7 @@ public class ReportingPeriodService {
 
         ReportingPeriod reportingPeriod = reportingPeriodMapper.toEntity(requestDto);
         reportingPeriod.setGrant(grant);
+        reportingPeriod.setStatus(ReportingPeriodStatus.OPEN);
 
         ReportingPeriod savedReportingPeriod = reportingPeriodRepository.save(reportingPeriod);
         return reportingPeriodMapper.toDto(savedReportingPeriod);
@@ -66,9 +67,13 @@ public class ReportingPeriodService {
         ReportingPeriod reportingPeriod = reportingPeriodRepository.findById(id)
                 .orElseThrow(() -> new ReportingPeriodNotFoundException("Reporting period not found with ID: " + id));
 
+        // Verify active state
+        reportingPeriod.verifyIsModifiable();
+
         LocalDate newStartDate = request.getStartDate() != null ? request.getStartDate() : reportingPeriod.getStartDate();
         LocalDate newEndDate = request.getEndDate() != null ? request.getEndDate() : reportingPeriod.getEndDate();
         validateDates(newStartDate, newEndDate);
+
 
         reportingPeriodMapper.update(request, reportingPeriod);
         return reportingPeriodMapper.toDto(reportingPeriodRepository.save(reportingPeriod));
@@ -86,9 +91,10 @@ public class ReportingPeriodService {
         ReportingPeriod reportingPeriod = reportingPeriodRepository.findById(id)
                 .orElseThrow(() -> new ReportingPeriodNotFoundException("Reporting period not found with ID: " + id));
 
-        if (reportingPeriod.getStatus() == ReportingPeriodStatus.CLOSED) {
-            throw new IllegalArgumentException("A closed reporting period cannot be deleted");
-        }
+        reportingPeriod.verifyIsModifiable();
+//        if (reportingPeriod.getStatus() == ReportingPeriodStatus.CLOSED) {
+//            throw new IllegalArgumentException("A closed reporting period cannot be deleted");
+//        }
         reportingPeriodRepository.delete(reportingPeriod);
     }
 

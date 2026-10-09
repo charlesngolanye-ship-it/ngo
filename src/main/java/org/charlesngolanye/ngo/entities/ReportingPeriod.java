@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.charlesngolanye.ngo.exceptions.InvalidPeriodStateException;
 
 import java.time.LocalDate;
 @Setter
@@ -32,4 +33,10 @@ public class ReportingPeriod {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grant_id", nullable = false)
     private Grant grant;
+
+    public void verifyIsModifiable() {
+        if (this.status == ReportingPeriodStatus.CLOSED) {
+            throw new InvalidPeriodStateException("Period status "  + this.status + " is CLOSED and cannot be modified");
+        }
+    }
 }

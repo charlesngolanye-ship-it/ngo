@@ -44,6 +44,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    // Lifecycle state violation (e.g. modifying CLOSED periods)
+    @ExceptionHandler(InvalidPeriodStateException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidPeriodState(
+            InvalidPeriodStateException exception
+    ) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     // Duplicate entity creation (e.g. duplicate framework + version)
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<Map<String, String>> handleDuplicateResource(

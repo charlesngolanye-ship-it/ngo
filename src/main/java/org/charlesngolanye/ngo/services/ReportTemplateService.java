@@ -94,6 +94,20 @@ public class ReportTemplateService {
         }
 
         reportTemplateMapper.update(request, reportTemplate);
+
+        // Uniqueness check excluding current entity
+        boolean existsDuplicate = reportTemplateRepository.existsByFrameworkAndVersionAndIdNot(
+                reportTemplate.getFramework(),
+                reportTemplate.getVersion(),
+                id
+        );
+
+        if (existsDuplicate) {
+            throw new DuplicateResourceException(
+                    "Report template with framework  '" + reportTemplate.getFramework() + " ' and version '" + reportTemplate.getVersion() + " ' already exists"
+            );
+        }
+
         return reportTemplateMapper.toDto(reportTemplateRepository.save(reportTemplate));
     }
 
