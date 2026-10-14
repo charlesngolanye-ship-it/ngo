@@ -12,7 +12,15 @@ import org.charlesngolanye.ngo.exceptions.InvalidTemplateStateException;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "reporting_templates")
+@Table(name = "reporting_templates",
+       uniqueConstraints = {
+          @UniqueConstraint(
+               name = "uk_template_framework_version",
+               columnNames = {"framework",
+                "version"}
+          )
+       }
+)
 public class ReportTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

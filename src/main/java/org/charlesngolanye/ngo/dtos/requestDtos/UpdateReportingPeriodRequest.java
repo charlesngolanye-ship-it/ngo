@@ -19,7 +19,4 @@ public class UpdateReportingPeriodRequest {
 
     @NotNull(message = "End date is required")
     private LocalDate endDate;
-
-    @NotNull(message = "Status is required")
-    private ReportingPeriodStatus status;
 }

@@ -76,7 +76,6 @@ public class ReportingCodeService {
     public ReportingCodeResponseDto update(Long id, UpdateReportingCodeRequest request) {
         ReportingCode reportingCode = reportingCodeRepository.findById(id)
                 .orElseThrow(() -> new ReportingCodeNotFoundException("Reporting code not found"));
-        //reportingCodeMapper.update(request, reportingCode);
 
         // Apply partial update mapping
         reportingCodeMapper.update(request, reportingCode);

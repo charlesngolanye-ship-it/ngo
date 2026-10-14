@@ -92,9 +92,7 @@ public class ReportingPeriodService {
                 .orElseThrow(() -> new ReportingPeriodNotFoundException("Reporting period not found with ID: " + id));
 
         reportingPeriod.verifyIsModifiable();
-//        if (reportingPeriod.getStatus() == ReportingPeriodStatus.CLOSED) {
-//            throw new IllegalArgumentException("A closed reporting period cannot be deleted");
-//        }
+
         reportingPeriodRepository.delete(reportingPeriod);
     }
 
