@@ -3,6 +3,7 @@ package org.charlesngolanye.ngo.repositories;
 import org.charlesngolanye.ngo.entities.ReportingMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReportingMappingRepository  extends JpaRepository<ReportingMapping, Long> {
@@ -20,4 +21,6 @@ public interface ReportingMappingRepository  extends JpaRepository<ReportingMapp
     boolean existsByReportTemplateIdAndBudgetCategoryIdAndIdNot(
             Long templateId, Long budgetCategoryId, Long id
     );
+
+    List<ReportingMapping> findByReportTemplateId(Long reportTemplateId);
 }
