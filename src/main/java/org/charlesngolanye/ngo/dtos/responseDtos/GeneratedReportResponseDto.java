@@ -14,18 +14,18 @@ import java.util.List;
 @Getter
 @Setter
 public class GeneratedReportResponseDto {
-    Long templateId;
-    String templateName;
-    Framework framework;
-    String templateVersion;
+    private Long templateId;
+    private String templateName;
+    private Framework framework;
+    private String templateVersion;
 
-    Long grantId;
-    String grantNumber;
-    String grantName;
+    private Long grantId;
+    private String grantNumber;
+    private String grantName;
 
-    Long periodId;
-    LocalDate periodStart;
-    LocalDate periodEnd;
+    private Long periodId;
+    private LocalDate periodStart;
+    private LocalDate periodEnd;
 
-    List<GeneratedReportSectionDto> sections;
+   private List<GeneratedReportSectionDto> sections;
 }

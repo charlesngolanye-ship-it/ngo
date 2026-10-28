@@ -51,4 +51,18 @@ public class ReportCalculationEngine {
  * Map: Extracts the monetary amount (BigDecimal) from each qualifying Expense object via Expense::getAmount.
  * Filter: Ensures no null amounts are processed to prevent a NullPointerException.
  * Reduce: Starts with a base value of BigDecimal.ZERO and sequentially adds every expense amount together using BigDecimal::add.
+ *
+ *
+ *
+ * ReportLine
+    ↓
+find mappings belonging to line
+    ↓
+extract BudgetCategory IDs
+    ↓
+find expenses belonging to those categories
+    ↓
+extract amounts
+    ↓
+SUM
  */

@@ -16,5 +16,5 @@ public class GeneratedReportSectionDto {
     private String code;
     private String name;
     private Integer displayOrder;
-    List<GeneratedReportLineDto> lines;
+    private List<GeneratedReportLineDto> lines;
 }

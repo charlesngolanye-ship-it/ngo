@@ -36,7 +36,7 @@ public class ReportGenerationService {
                         .orElseThrow(() -> new ReportTemplateNotFoundException(
                                         "Report template not found with ID: " + templateId));
 
-        template.verifyIsActive();
+        //template.verifyIsActive();
 
         ReportingPeriod period = reportingPeriodRepository.findById(reportingPeriodId)
                         .orElseThrow(() -> new ReportingPeriodNotFoundException(
